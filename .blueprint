@@ -1,0 +1,15 @@
+created:
+    - database/factories/RoleFactory.php
+    - database/factories/TreatmentdetailFactory.php
+    - database/factories/TreatmentFactory.php
+    - database/migrations/2024_03_05_130041_create_roles_table.php
+    - database/migrations/2024_03_05_130042_create_treatmentdetails_table.php
+    - database/migrations/2024_03_05_130043_create_treatments_table.php
+    - app/Models/Role.php
+    - app/Models/Treatmentdetail.php
+    - app/Models/Treatment.php
+models:
+    User: {  }
+    Role: { name: 'string:25', relationships: { hasMany: User } }
+    Treatmentdetail: { name: 'string:100', description: longtext, patient_id: 'id foreign:users', dentist_id: 'id foreign:users', treatment_id: 'id foreign:treatments', relationships: { belongsTo: 'User:patient,User:dentist,Treatment' } }
+    Treatment: { name: 'string:100', description: longtext, relationships: { hasMany: Treatmentdetail } }
