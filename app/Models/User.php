@@ -7,11 +7,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
+use Rawilk\ProfileFilament\Concerns\TwoFactorAuthenticatable;
+use Rawilk\ProfileFilament\Contracts\PendingUserEmail\MustVerifyNewEmail;
+use Filament\Models\Contracts\HasAvatar;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyNewEmail, FilamentUser, HasAvatar
 {
     use HasApiTokens, HasFactory, Notifiable;
+    use TwoFactorAuthenticatable;
 
     /**
      * The attributes that are mass assignable.
@@ -23,6 +30,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role_id',
+        'avatar_url',
     ];
 
     /**
@@ -48,5 +56,16 @@ class User extends Authenticatable
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
+    }
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return $this->avatar_url ? Storage::url($this->avatar_url) : null ;
+    }
+
+    public function canAccessPanel(Panel $panel): bool    {
+        if ($panel->getId() === 'admin') {
+            return $this->role->name === 'admin';
+        }
+        
     }
 }

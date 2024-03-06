@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Rawilk\ProfileFilament\Facades\Webauthn;
+use Rawilk\ProfileFilament\Features;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +21,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Features::defaults(function () {
+            return Features::make()
+                ->usePasskeys(false)
+                ;
+        });
     }
 }
