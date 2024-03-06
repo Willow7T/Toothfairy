@@ -64,12 +64,17 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->plugins(
-                [BreezyCore::make()
+                [
+                BreezyCore::make()
                 ->avatarUploadComponent(fn() => 
                 FileUpload::make('avatar_url')
-                ->imageEditor()
                 ->avatar()
+                ->image()
+                ->imageEditor()
+                ->circleCropper()
+                ->label('Profile Picture')
                 ->multiple(false)
+                ->maxSize(1024)
                 )
                 ->myProfile(
                     hasAvatars: true,
@@ -80,7 +85,7 @@ class AdminPanelProvider extends PanelProvider
                 ]),
 
 
-                 ProfileFilamentPlugin::make()
+                ProfileFilamentPlugin::make()
                  ->usingRootProfilePage(Settings::class)
                  ->profile(
                    enabled: false,

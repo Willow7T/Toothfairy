@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreignId('dentist_id')->constrained('users');
             $table->foreignId('treatment_id')->constrained();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::enableForeignKeyConstraints();
