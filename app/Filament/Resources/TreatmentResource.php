@@ -13,7 +13,6 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-
 class TreatmentResource extends Resource
 {
     protected static ?string $model = Treatment::class;
@@ -30,6 +29,11 @@ class TreatmentResource extends Resource
                 Forms\Components\Textarea::make('description')
                     ->required()
                     ->columnSpanFull(),
+                Forms\Components\TextInput::make('price')
+                    ->numeric()
+                    ->required()
+                    ->prefixIcon('heroicon-o-banknotes')
+                    ->suffix('kyats'),
             ]);
     }
 
@@ -39,6 +43,9 @@ class TreatmentResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('price')
+                    ->money()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -47,13 +54,21 @@ class TreatmentResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('deleted_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\EditAction::make()
+                    ->slideOver(),
+                    Tables\Actions\DeleteAction::make(),
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -77,7 +92,7 @@ class TreatmentResource extends Resource
             'index' => Pages\ListTreatments::route('/'),
             'create' => Pages\CreateTreatment::route('/create'),
             'view' => Pages\ViewTreatment::route('/{record}'),
-            'edit' => Pages\EditTreatment::route('/{record}/edit'),
+           // 'edit' => Pages\EditTreatment::route('/{record}/edit'),
         ];
     }
 

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\TreatmentResource\Pages;
 
 use App\Filament\Resources\TreatmentResource;
+use App\Models\Treatment;
 use Filament\Actions;
 use Filament\Resources\Pages\ViewRecord;
 
@@ -13,7 +14,8 @@ class ViewTreatment extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\EditAction::make(),
+            Actions\EditAction::make()
+             ,
         ];
     }
 }

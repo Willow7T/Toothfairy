@@ -23,8 +23,11 @@ use App\Http\Middleware\StoreSessionData;
 use Jeffgreco13\FilamentBreezy\BreezyCore;
 use Rawilk\ProfileFilament\ProfileFilamentPlugin;
 use Rawilk\ProfileFilament\Features;
-use Rawilk\ProfileFilament\Filament\Clusters\Profile\Security;
 use Rawilk\ProfileFilament\Filament\Clusters\Profile\Settings;
+use Awcodes\LightSwitch\LightSwitchPlugin;
+use Awcodes\LightSwitch\Enums\Alignment;
+use Hasnayeen\Themes\ThemesPlugin;
+use Hasnayeen\Themes\Http\Middleware\SetTheme;
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -34,9 +37,12 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->registration()
+            ->unsavedChangesAlerts(0)
             ->colors([
                 'primary' => Color::Indigo,
                 'secondary' => Color::Gray,
+                
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
@@ -45,8 +51,8 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                //Widgets\AccountWidget::class,
+                //Widgets\FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -59,12 +65,19 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
                 StoreSessionData::class,
+                SetTheme::class,
             ])
             ->authMiddleware([
                 Authenticate::class,
             ])
             ->plugins(
                 [
+                LightSwitchPlugin::make()
+                ->position(Alignment::BottomCenter),
+
+
+                ThemesPlugin::make(),
+
                 BreezyCore::make()
                 ->avatarUploadComponent(fn() => 
                 FileUpload::make('avatar_url')
@@ -100,14 +113,7 @@ class AdminPanelProvider extends PanelProvider
                     )
                 )
             
-            ])
-            // ->plugin(
-            //     BreezyCore::make()
-            //     ->myProfile(
-            //         hasAvatars: false,
-            //     )
-            // )
-                  
+            ])        
     ;}
 }
 
