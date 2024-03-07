@@ -86,6 +86,7 @@ class AdminPanelProvider extends PanelProvider
                 ->imageEditor()
                 ->circleCropper()
                 ->label('Profile Picture')
+                ->directory('avatars')
                 ->multiple(false)
                 ->maxSize(1024)
                 )

@@ -17,7 +17,7 @@ class TreatmentResource extends Resource
 {
     protected static ?string $model = Treatment::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-beaker';
 
     public static function form(Form $form): Form
     {
@@ -44,8 +44,11 @@ class TreatmentResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('price')
-                    ->money()
+                    ->suffix(' kyats')
                     ->sortable(),
+                Tables\Columns\TextColumn::make('description')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -66,7 +69,7 @@ class TreatmentResource extends Resource
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make()
-                    ->slideOver(),
+                        ->slideOver(),
                     Tables\Actions\DeleteAction::make(),
                 ]),
             ])
@@ -92,7 +95,7 @@ class TreatmentResource extends Resource
             'index' => Pages\ListTreatments::route('/'),
             'create' => Pages\CreateTreatment::route('/create'),
             'view' => Pages\ViewTreatment::route('/{record}'),
-           // 'edit' => Pages\EditTreatment::route('/{record}/edit'),
+            // 'edit' => Pages\EditTreatment::route('/{record}/edit'),
         ];
     }
 

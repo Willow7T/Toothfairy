@@ -20,10 +20,8 @@ return new class extends Migration
 
         DB::table('roles')->insert([
             ['name' => 'admin'],
-            ['name' => 'manager'],
             ['name' => 'dentist'],
             ['name' => 'patient'],
-            ['name' => 'guest'],
         ]);
     }
 

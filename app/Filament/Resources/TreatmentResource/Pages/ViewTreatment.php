@@ -15,7 +15,7 @@ class ViewTreatment extends ViewRecord
     {
         return [
             Actions\EditAction::make()
-             ,
+            ->slideOver(),
         ];
     }
 }
