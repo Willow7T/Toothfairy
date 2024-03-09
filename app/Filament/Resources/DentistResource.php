@@ -17,7 +17,7 @@ class DentistResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'healthicons-o-doctor-male';
 
     protected static ?string $label = 'Dentists';
 
@@ -30,14 +30,23 @@ class DentistResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                //
-            ]);
+        ->schema([
+            Forms\Components\TextInput::make('name')
+                ->required()
+                ->maxLength(100),
+            Forms\Components\TextInput::make('email')
+                ->required()
+                ->email()
+                ->unique('users', 'email')
+                ->prefixIcon('heroicon-o-envelope')
+                ->hiddenOn('edit'),
+        ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
+        
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
@@ -48,8 +57,12 @@ class DentistResource extends Resource
                 Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\EditAction::make()
+                        ->slideOver(),
+                    Tables\Actions\DeleteAction::make(),
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -73,7 +86,7 @@ class DentistResource extends Resource
             'index' => Pages\ListDentists::route('/'),
             'create' => Pages\CreateDentist::route('/create'),
             'view' => Pages\ViewDentist::route('/{record}'),
-            'edit' => Pages\EditDentist::route('/{record}/edit'),
+            //'edit' => Pages\EditDentist::route('/{record}/edit'),
         ];
     }
 
@@ -82,9 +95,7 @@ class DentistResource extends Resource
         return parent::getEloquentQuery()
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
-            ])
-            ->whereHas('role', function ($query) {
-                $query->where('id', 2); 
-            });
+            ])->where('role_id', 2)
+            ;
     }
 }

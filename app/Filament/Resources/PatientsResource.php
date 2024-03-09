@@ -19,7 +19,7 @@ class PatientsResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-user';
+    protected static ?string $navigationIcon = 'fluentui-patient-32-o';
 
     protected static ?string $label = 'Patients';
 
@@ -33,7 +33,15 @@ class PatientsResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\TextInput::make('name')
+                    ->required()
+                    ->maxLength(100),
+                Forms\Components\TextInput::make('email')
+                    ->required()
+                    ->email()
+                    ->unique('users', 'email')
+                    ->prefixIcon('heroicon-o-envelope')
+                    ->hiddenOn('edit'),
             ]);
     }
 
@@ -45,14 +53,17 @@ class PatientsResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
-
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\EditAction::make()
+                        ->slideOver(),
+                    Tables\Actions\DeleteAction::make(),
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -76,7 +87,7 @@ class PatientsResource extends Resource
             'index' => Pages\ListPatients::route('/'),
             'create' => Pages\CreatePatients::route('/create'),
             'view' => Pages\ViewPatients::route('/{record}'),
-            'edit' => Pages\EditPatients::route('/{record}/edit'),
+            // 'edit' => Pages\EditPatients::route('/{record}/edit'),
         ];
     }
 
@@ -85,11 +96,6 @@ class PatientsResource extends Resource
         return parent::getEloquentQuery()
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
-            ])
-            ->whereHas('role', function ($query) {
-                $query->where('id', 3); 
-            });
-            
+            ])->where('role_id', 3);
     }
-
 }
