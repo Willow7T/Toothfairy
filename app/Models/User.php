@@ -20,7 +20,7 @@ class User extends Authenticatable implements MustVerifyNewEmail, FilamentUser, 
 {
     use HasApiTokens, HasFactory, Notifiable;
     use TwoFactorAuthenticatable;
-    use SoftDeletes;    
+    use SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -68,13 +68,13 @@ class User extends Authenticatable implements MustVerifyNewEmail, FilamentUser, 
     }
     public function getFilamentAvatarUrl(): ?string
     {
-        return $this->avatar_url ? Storage::url($this->avatar_url) : null ;
+        return $this->avatar_url ? Storage::url($this->avatar_url) : null;
     }
 
-    public function canAccessPanel(Panel $panel): bool    {
+    public function canAccessPanel(Panel $panel): bool
+    {
         if ($panel->getId() === 'admin') {
-            return $this->role->name === 'admin';
+            return $this->role->name === 'patient';
         }
-        
     }
 }
