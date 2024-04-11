@@ -19,7 +19,7 @@ class PatientsResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'fluentui-patient-32-o';
+    protected static ?string $navigationIcon = 'vaadin-dental-chair';
 
     protected static ?string $label = 'Patients';
 

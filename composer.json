@@ -12,6 +12,7 @@
         "awcodes/light-switch": "^1.0",
         "codeat3/blade-fluentui-system-icons": "^1.33",
         "codeat3/blade-fontisto-icons": "^1.4",
+        "codeat3/blade-vaadin-icons": "^1.5",
         "filament/filament": "^3.2",
         "guzzlehttp/guzzle": "^7.2",
         "hasnayeen/themes": "^3.0",
