@@ -74,7 +74,7 @@ class User extends Authenticatable implements MustVerifyNewEmail, FilamentUser, 
     public function canAccessPanel(Panel $panel): bool
     {
         if ($panel->getId() === 'admin') {
-            return $this->role->name === 'patient';
+            return $this->role->name === 'admin';
         }
     }
 }
