@@ -66,6 +66,11 @@ class User extends Authenticatable implements MustVerifyNewEmail, FilamentUser, 
     {
         return $this->belongsTo(Role::class);
     }
+    public function userBio()
+    {
+        return $this->hasOne(UserBio::class);
+    }
+
     public function getFilamentAvatarUrl(): ?string
     {
         return $this->avatar_url ? Storage::url($this->avatar_url) : null;
@@ -75,6 +80,12 @@ class User extends Authenticatable implements MustVerifyNewEmail, FilamentUser, 
     {
         if ($panel->getId() === 'admin') {
             return $this->role->name === 'admin';
+        }
+        else if ($panel->getId() === 'dentist') {
+            return $this->role->name === 'dentist';
+        }
+        else if ($panel->getId() === 'patient') {
+            return $this->role->name === 'patient';
         }
     }
 }

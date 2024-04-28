@@ -16,9 +16,10 @@ class CreatePatients extends CreateRecord
         $data['password'] = 'password';
         return $data;
     }
-  
+
     protected function getRedirectUrl(): string
     {
         return $this->previousUrl ?? $this->getResource()::getUrl('index');
     }
+   
 }

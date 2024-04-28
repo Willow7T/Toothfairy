@@ -46,12 +46,16 @@ class DentistResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-        
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
+
+                //New Columns
+                Tables\Columns\TextColumn::make('role.name')
+                ->label('Role'),
+
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),

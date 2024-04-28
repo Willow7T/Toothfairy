@@ -53,6 +53,9 @@ class AdminPanelProvider extends PanelProvider
                 //Widgets\AccountWidget::class,
                 //Widgets\FilamentInfoWidget::class,
             ])
+            ->sidebarWidth('16rem')
+            ->maxContentWidth('7xl')
+            ->sidebarCollapsibleOnDesktop()
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -108,11 +111,9 @@ class AdminPanelProvider extends PanelProvider
                     ->twoFactorAuthentication(
                         enabled: true,
                         authenticatorApps: true,
-                        webauthn: false,
-                        
+                        webauthn: false,       
                     )
                 )
-            
             ])        
     ;}
 }

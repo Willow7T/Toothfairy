@@ -3,17 +3,29 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PatientsResource\Pages;
-use App\Filament\Resources\PatientsResource\RelationManagers;
 use App\Models\Treatment;
 use App\Models\User;
+use Cheesegrits\FilamentPhoneNumbers\Columns\PhoneNumberColumn;
+use Cheesegrits\FilamentPhoneNumbers\Enums\PhoneFormat;
+use Cheesegrits\FilamentPhoneNumbers\Forms\Components\PhoneNumber;
 use Filament\Forms;
+use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Support\Enums\IconPosition;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\Checkbox;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Contracts\Support\Htmlable;
+
 
 class PatientsResource extends Resource
 {
@@ -33,15 +45,47 @@ class PatientsResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
+                //fields from user
+                TextInput::make('name')
                     ->required()
                     ->maxLength(100),
-                Forms\Components\TextInput::make('email')
+                TextInput::make('email')
                     ->required()
                     ->email()
                     ->unique('users', 'email')
                     ->prefixIcon('heroicon-o-envelope')
                     ->hiddenOn('edit'),
+
+                //Fields from user_bio
+                Fieldset::make('User Bio')
+                    ->relationship('userBio')
+                    ->schema([
+                        DatePicker::make('birthday')
+                            ->label('Birthday')
+                            ->after('1900-01-01')
+                            ->before('today')
+                            ->native(false),
+                        TextInput::make('age')
+                            ->label('Age')
+                            ->type('number'),
+                        Select::make('sex')
+                            ->label('Sex')
+                            ->options([
+                                'male' => 'Male',
+                                'female' => 'Female',
+                                'other' => 'Other',
+                            ]),
+                        PhoneNumber::make('phone_no')
+                            ->label('Phone number')
+                            ->prefix('+95')
+                            ->region('MM'),
+                        Textarea::make('address')
+                            ->label('Address')
+                            ->rows(5),
+                        Textarea::make('medical_info')
+                            ->label('Medical Info')
+                            ->rows(5),
+                    ]),
             ]);
     }
 
@@ -49,10 +93,47 @@ class PatientsResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
+                    ->searchable()
+                    ->copyable(),
+                TextColumn::make('email')
+                    ->icon('heroicon-m-envelope')
+                    ->iconPosition(IconPosition::After)
+                    ->iconColor('primary')
+                    ->copyable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->searchable(),
-                Tables\Columns\TextColumn::make('email')
-                    ->searchable(),
+                // Add columns for user bio
+                TextColumn::make('userBio.birthday')
+                    ->label('Birthday'),
+                TextColumn::make('userBio.age')
+                    ->label('Age')
+                    ->sortable(true),
+                IconColumn::make('userBio.sex')
+                    ->label('Sex')
+                    ->icon(fn (string $state): string => match ($state) {
+                        'male' => 'eos-male',
+                        'female' => 'eos-female',
+                        'other' => 'eos-question-mark',
+                    })
+                    ->color(fn (string $state): string => match ($state) {
+                        'male' => 'info',
+                        'female' => 'danger',
+                        'other' => 'gray',
+                        default => 'gray',
+                    })
+                    ->size(IconColumn\IconColumnSize::Medium)
+                    ->sortable(true),
+                PhoneNumberColumn::make('userBio.phone_no')
+                    ->label('Phone number')
+                    ->displayFormat(PhoneFormat::INTERNATIONAL)
+                    ->dial(),
+                TextColumn::make('userBio.address')
+                    ->label('Address')
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('userBio.medical_info')
+                    ->label('Medical Info')
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
@@ -76,9 +157,7 @@ class PatientsResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
