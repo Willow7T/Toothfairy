@@ -21,7 +21,7 @@ return new class extends Migration
             $table->enum('sex', ['male', 'female', 'other'])->nullable();
             $table->text('medical_info')->nullable();
             $table->string('phone_no')->nullable();
-            $table->string('address')->nullable();
+            $table->text('address')->nullable();
             
             // Foreign key constraint
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
