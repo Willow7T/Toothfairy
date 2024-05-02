@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\AppointmentResource\Pages;
 use App\Filament\Resources\AppointmentResource\RelationManagers;
 use App\Models\Appointment;
+use Blueprint\Models\Column;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
@@ -18,6 +19,9 @@ use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\ColumnGroup;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -38,12 +42,16 @@ class AppointmentResource extends Resource
                             ->label('Patient')
                             //user role must be 3 (patient) relation
                             ->relationship('patient', 'name')
-                            ->required(),
+                            ->searchable()
+                            ->required()
+                            ->loadingMessage('Loading patients...'),
                         Select::make('dentist_id')
                             ->label('Dentist')
                             //user role must be 2 (dentist) relation
                             ->relationship('dentist', 'name')
-                            ->required(),
+                            ->searchable()
+                            ->required()
+                            ->loadingMessage('Loading dentists...'),
                         DatePicker::make('appointment_date')
                             ->label('Appointment Date')
                             ->default('today')
@@ -71,6 +79,8 @@ class AppointmentResource extends Resource
                             ->label('Treatment')
                             ->relationship('treatment', 'name')
                             ->live()
+                            ->searchable()
+                            ->loadingMessage('Loading treatments...')
                             ->afterStateUpdated(function (Forms\Set $set, Forms\Get $get) {
                                 //get the treatment price
                                 $treatment_id = $get('treatment_id');
@@ -98,12 +108,12 @@ class AppointmentResource extends Resource
                                     ->label('Quantity')
                                     ->numeric()
                                     ->default(1)
-                                    ->live(onBlur: true)
-                                    ->afterStateUpdated(function (Set $set, Get $get) {
-                                        $price = $get('price');
-                                        $quantity = $get('quantity');
-                                        $set('calculated_fee', $price * $quantity);
-                                    })
+                                    // ->live(onBlur: true)
+                                    // ->afterStateUpdated(function (Set $set, Get $get) {
+                                    //     $price = $get('price');
+                                    //     $quantity = $get('quantity');
+                                    //     $set('calculated_fee', $price * $quantity);
+                                    // })
                                     ->required(),
                                 TextInput::make('price')
                                     ->columnSpan(['xl' => 1, 'lg' => 2, 'md' => 2, 'sm' => 2])
@@ -112,20 +122,20 @@ class AppointmentResource extends Resource
                                     ->suffix('kyats')
                                     ->default(0)
                                     ->prefixIcon('heroicon-o-banknotes')
-                                    ->live(onBlur: true)
-                                    ->afterStateUpdated(function (Set $set, Get $get) {
-                                        $price = $get('price');
-                                        $quantity = $get('quantity');
-                                        $set('calculated_fee', $price * $quantity);
-                                    })
+                                    // ->live(onBlur: true)
+                                    // ->afterStateUpdated(function (Set $set, Get $get) {
+                                    //     $price = $get('price');
+                                    //     $quantity = $get('quantity');
+                                    //     $set('calculated_fee', $price * $quantity);
+                                    // })
                                     ->required(),
-                                Placeholder::make('calculated_fee')
-                                    ->label('Calculated Fee')
-                                    ->content(function (Get $get): string {
-                                        $price = $get('price');
-                                        $quantity = $get('quantity');
-                                        return number_format($price * $quantity) . ' kyats';
-                                    }),
+                                // Placeholder::make('calculated_fee')
+                                //     ->label('Calculated Fee')
+                                //     ->content(function (Get $get): string {
+                                //         $price = $get('price');
+                                //         $quantity = $get('quantity');
+                                //         return number_format($price * $quantity) . ' kyats';
+                                //     }),
                             ]),
 
                     ]),
@@ -145,18 +155,66 @@ class AppointmentResource extends Resource
                     ->autosize()
                     ->rows(2),
 
+
             ]);
     }
-   
+
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                Text
-                TextColumn::make('dentist.name')
-                TextColumn::make('patient.name')
+                TextColumn::make('appointment_date')
+                    ->date()
+                    ->label('Appointment Date'),
+                TextColumn::make('dentist.name'),
+                TextColumn::make('patient.name'),
+                ColumnGroup::make('Treatments', [
+                    TextColumn::make('treatments.treatment.name')
+                        ->label('Treatment')
+                        ->listWithLineBreaks()
+                        ->bulleted()->toggleable(isToggledHiddenByDefault: true),
+                    TextColumn::make('treatments.quantity')
+                        ->label('Quantity')
+                        ->listWithLineBreaks()
+                        ->bulleted()->toggleable(isToggledHiddenByDefault: true),
+                    TextColumn::make('treatments.price')
+                        ->label('Price')
+                        ->listWithLineBreaks()
+                        ->bulleted()->toggleable(isToggledHiddenByDefault: true),
+                ]),
+                ColumnGroup::make('Price', [
+                    TextColumn::make('calculated_fee')
+                        ->label('Without Discount')
+                        ->suffix(' kyats')->toggleable(isToggledHiddenByDefault: true),
+                    TextColumn::make('discount')
+                        ->label('Discount')
+                        ->suffix(' kyats')->toggleable(isToggledHiddenByDefault: true),
+                    TextColumn::make('total_fee')
+                        ->label('Total Cost')
+                        ->suffix(' kyats')->toggleable(isToggledHiddenByDefault: true),
+                ]),
+                SelectColumn::make('status')
+                    ->label('Status')
+                    ->options([
+                        'pending' => 'Pending',
+                        'completed' => 'Completed',
+                        'cancelled' => 'Cancelled',
+                    ])->toggleable(),
+
+                TextColumn::make('discription')
+                    ->label('Remarks')
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('created_at')
+                    ->label('Created At')
+                    ->since()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('updated_at')
+                    ->label('Updated At')
+                    ->since()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
+
             ->filters([
                 //
             ])

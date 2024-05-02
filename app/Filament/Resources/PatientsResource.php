@@ -133,6 +133,7 @@ class PatientsResource extends Resource
                     ->searchable(),
                 // Add columns for user bio
                 TextColumn::make('userBio.birthday')
+                    ->date()
                     ->label('Birthday'),
                 TextColumn::make('userBio.age')
                     ->label('Age')

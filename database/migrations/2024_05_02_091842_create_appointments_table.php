@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('patient_id')->constrained('users')->onDelete('cascade');
             //user_id but doctor role
             $table->unsignedBigInteger('dentist_id')->constrained('users')->onDelete('cascade');
-            $table->dateTime('appointment_date')->nullable();
+            $table->date('appointment_date')->nullable();
             $table->enum('status', ['pending','cancelled', 'completed'])->default('pending');
             $table->decimal('calculated_fee', 10, 2)->nullable();
             $table->decimal('discount', 10, 2)->nullable();
