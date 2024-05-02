@@ -57,9 +57,9 @@ class User extends Authenticatable implements MustVerifyNewEmail, FilamentUser, 
 
     protected static function booted(): void
     {
-        static::creating(function (User $user) {
-            $user->role_id = 3;
-        });
+        // static::creating(function (User $user) {
+        //     $user->role_id = 3;
+        // });
     }
 
     public function role(): BelongsTo

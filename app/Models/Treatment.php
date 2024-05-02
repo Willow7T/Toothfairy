@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -20,7 +21,8 @@ class Treatment extends Model
     protected $fillable = [
         'name',
         'description',
-        'price'
+        'price_min',
+        'price_max',
     ];
 
     /**
@@ -32,8 +34,9 @@ class Treatment extends Model
         'id' => 'integer',
     ];
 
-    public function treatmentdetails(): HasMany
-    {
-        return $this->hasMany(Treatmentdetail::class);
-    }
+    // // belogns to appointment table with appointment_treatment table as pivot
+    // public function appointments(): BelongsToMany
+    // {
+    //     return $this->belongsToMany(Appointment::class, 'appointment_treatment')->withPivot('price');
+    // }
 }

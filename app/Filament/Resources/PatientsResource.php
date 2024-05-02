@@ -78,6 +78,7 @@ class PatientsResource extends Resource
                             ->label('Age')
                             ->live()
                             ->suffix('years')
+                            ->numeric()
                             ->prefixIcon('iconpark-birthdaycake-o')
                             ->afterStateUpdated(function (Set $set, Get $get) {
                                 $age = $get('age');

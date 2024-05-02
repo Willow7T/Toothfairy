@@ -3,12 +3,15 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\TreatmentResource\Pages;
-use App\Filament\Resources\TreatmentResource\RelationManagers;
+//use App\Filament\Resources\TreatmentResource\RelationManagers;
 use App\Models\Treatment;
 use Filament\Forms;
+use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Form;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\ColumnGroup;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -23,17 +26,31 @@ class TreatmentResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
+                TextInput::make('name')
                     ->required()
                     ->maxLength(100),
                 Forms\Components\Textarea::make('description')
                     ->required()
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('price')
-                    ->numeric()
-                    ->required()
-                    ->prefixIcon('heroicon-o-banknotes')
-                    ->suffix('kyats'),
+                    ->rows(1)
+                    ->autosize(),
+
+                Fieldset::make('Price Range')
+                    ->columns(2)
+                    ->schema([
+                        TextInput::make('price_min')
+                            ->label('Price Minimum')
+                            ->numeric()
+                            ->required()
+                            ->prefixIcon('heroicon-o-banknotes')
+                            ->suffix('kyats'),
+                        TextInput::make('price_max')
+                            ->label('Price Maxium')
+                            ->numeric()
+                            ->required()
+                            ->prefixIcon('heroicon-o-banknotes')
+                            ->suffix('kyats'),
+                    ]),
+
             ]);
     }
 
@@ -43,9 +60,14 @@ class TreatmentResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('price')
-                    ->suffix(' kyats')
-                    ->sortable(),
+                ColumnGroup::make('Price Range',[
+                    Tables\Columns\TextColumn::make('price_min')
+                        ->suffix(' kyats')
+                        ->sortable(),
+                    Tables\Columns\TextColumn::make('price_max')
+                        ->suffix(' kyats')
+                        ->sortable(),
+                ]),
                 Tables\Columns\TextColumn::make('description')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
