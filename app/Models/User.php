@@ -76,6 +76,21 @@ class User extends Authenticatable implements MustVerifyNewEmail, FilamentUser, 
         return $this->avatar_url ? Storage::url($this->avatar_url) : null;
     }
 
+    //appointment relation
+    public function appointmentswpatient()
+    {
+        //return with appointment.patient_id instead of appointments.user_id
+        return $this->hasMany(Appointment::class, 'patient_id');
+    
+    }
+    
+    public function appointmentswdentist()
+    {
+        //return with appointment.dentist_id instead of appointments.user_id
+        return $this->hasMany(Appointment::class, 'dentist_id');
+    
+    }
+
     public function canAccessPanel(Panel $panel): bool
     {
         if ($panel->getId() === 'admin') {

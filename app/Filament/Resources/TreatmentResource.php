@@ -30,7 +30,6 @@ class TreatmentResource extends Resource
                     ->required()
                     ->maxLength(100),
                 Forms\Components\Textarea::make('description')
-                    ->required()
                     ->rows(1)
                     ->autosize(),
 

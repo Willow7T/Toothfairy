@@ -5,6 +5,8 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\AppointmentResource\Pages;
 use App\Filament\Resources\AppointmentResource\RelationManagers;
 use App\Models\Appointment;
+use App\Models\Treatment;
+use App\Models\User;
 use Blueprint\Models\Column;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
@@ -20,7 +22,6 @@ use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\ColumnGroup;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -30,6 +31,15 @@ class AppointmentResource extends Resource
     protected static ?string $model = Appointment::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    protected static ?string $label = 'Appointments';
+
+    protected static ?string $modelLabel = 'Appointments';
+
+    protected static ?string $navigationGroup = 'Transaction';
+
+    protected static ?string $navigationLabel = 'Appointments';
+
 
     public static function form(Form $form): Form
     {
@@ -42,6 +52,7 @@ class AppointmentResource extends Resource
                             ->label('Patient')
                             //user role must be 3 (patient) relation
                             ->relationship('patient', 'name')
+                            ->options(User::where('role_id', 3)->get()->pluck('name', 'id'))
                             ->searchable()
                             ->required()
                             ->loadingMessage('Loading patients...'),
@@ -49,6 +60,8 @@ class AppointmentResource extends Resource
                             ->label('Dentist')
                             //user role must be 2 (dentist) relation
                             ->relationship('dentist', 'name')
+                            //only role 2
+                            ->options(User::where('role_id', 2)->get()->pluck('name', 'id'))
                             ->searchable()
                             ->required()
                             ->loadingMessage('Loading dentists...'),
@@ -66,7 +79,8 @@ class AppointmentResource extends Resource
                             ])
                             ->default('pending')
                             ->required(),
-                    ]),
+                    
+                        ]),
 
                 Repeater::make('treatments')
                     ->relationship('treatments')
@@ -80,6 +94,8 @@ class AppointmentResource extends Resource
                             ->relationship('treatment', 'name')
                             ->live()
                             ->searchable()
+                            //orderedby last update
+                            ->options(Treatment::orderBy('updated_at', 'desc')->get()->pluck('name', 'id'))
                             ->loadingMessage('Loading treatments...')
                             ->afterStateUpdated(function (Forms\Set $set, Forms\Get $get) {
                                 //get the treatment price
@@ -136,9 +152,8 @@ class AppointmentResource extends Resource
                                 //         $quantity = $get('quantity');
                                 //         return number_format($price * $quantity) . ' kyats';
                                 //     }),
-                            ]),
-
-                    ]),
+                                ]),
+           ]),
                 TextInput::make('discount')
                     ->placeholder('Discount')
                     ->label('Discount')

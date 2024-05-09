@@ -26,8 +26,10 @@ use Rawilk\ProfileFilament\Features;
 use Rawilk\ProfileFilament\Filament\Clusters\Profile\Settings;
 use Awcodes\LightSwitch\LightSwitchPlugin;
 use Awcodes\LightSwitch\Enums\Alignment;
+use Filament\Navigation\NavigationGroup;
 use Hasnayeen\Themes\ThemesPlugin;
 use Hasnayeen\Themes\Http\Middleware\SetTheme;
+
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -37,7 +39,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->registration()
+            //->registration()
             ->unsavedChangesAlerts(0)
             ->colors([
                 'primary' => Color::Indigo,
@@ -47,6 +49,12 @@ class AdminPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
                 Pages\Dashboard::class,
+            ])
+            ->navigationGroups([
+                NavigationGroup::make()
+                    ->label('People'),
+                NavigationGroup::make()
+                    ->label('Transaction')
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
@@ -74,47 +82,48 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->plugins(
                 [
-                LightSwitchPlugin::make()
-                ->position(Alignment::BottomCenter),
+                    LightSwitchPlugin::make()
+                        ->position(Alignment::BottomCenter),
 
 
-                ThemesPlugin::make(),
+                    ThemesPlugin::make(),
 
-                BreezyCore::make()
-                ->avatarUploadComponent(fn() => 
-                FileUpload::make('avatar_url')
-                ->avatar()
-                ->image()
-                ->imageEditor()
-                ->circleCropper()
-                ->label('Profile Picture')
-                ->directory('avatars')
-                ->multiple(false)
-                ->maxSize(1024)
-                )
-                ->myProfile(
-                    hasAvatars: true,
-                    slug: 'profile/info',
-                    
-                )->withoutMyProfileComponents([
-                    'update_password'
-                ]),
+                    BreezyCore::make()
+                        ->avatarUploadComponent(
+                            fn () =>
+                            FileUpload::make('avatar_url')
+                                ->avatar()
+                                ->image()
+                                ->imageEditor()
+                                ->circleCropper()
+                                ->label('Profile Picture')
+                                ->directory('avatars')
+                                ->multiple(false)
+                                ->maxSize(1024)
+                        )
+                        ->myProfile(
+                            hasAvatars: true,
+                            slug: 'profile/info',
+
+                        )->withoutMyProfileComponents([
+                            'update_password'
+                        ]),
 
 
-                ProfileFilamentPlugin::make()
-                 ->usingRootProfilePage(Settings::class)
-                 ->profile(
-                   enabled: false,
-                 )
-                ->features(
-                    Features::defaults()
-                    ->twoFactorAuthentication(
-                        enabled: true,
-                        authenticatorApps: true,
-                        webauthn: false,       
-                    )
-                )
-            ])        
-    ;}
+                    ProfileFilamentPlugin::make()
+                        ->usingRootProfilePage(Settings::class)
+                        ->profile(
+                            enabled: false,
+                        )
+                        ->features(
+                            Features::defaults()
+                                ->twoFactorAuthentication(
+                                    enabled: true,
+                                    authenticatorApps: true,
+                                    webauthn: false,
+                                )
+                        )
+                ]
+            );
+    }
 }
-

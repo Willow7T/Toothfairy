@@ -10,7 +10,7 @@ class CreateDentist extends CreateRecord
 {
     protected static string $resource = DentistResource::class;
 
-    protected function mutateFormDataAfterCreate(array $data): array
+    protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['role_id'] = 2;
         $data['password'] = 'password';

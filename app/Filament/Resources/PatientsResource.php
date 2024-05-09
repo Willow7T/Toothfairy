@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\PatientsResource\RelationManagers\AppointmentRelationManager;
 use App\Filament\Resources\PatientsResource\Pages;
 use App\Models\Treatment;
 use App\Models\User;
@@ -17,6 +18,9 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
+use Filament\Infolists\Components\IconEntry;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -38,7 +42,9 @@ class PatientsResource extends Resource
 
     protected static ?string $modelLabel = 'Patients';
 
-    protected static ?string $navigationGroup = 'Users';
+    protected static ?string $navigationGroup = 'People';
+
+    protected static ?int $navigationSort = 2;
 
     protected static ?string $navigationLabel = 'Patients';
 
@@ -193,10 +199,40 @@ class PatientsResource extends Resource
                 ]),
             ]);
     }
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                TextEntry::make('name'),
+                IconEntry::make('userBio.sex')
+                    ->label('Sex')
+                    ->icon(fn (string $state): string => match ($state) {
+                        'male' => 'bi-gender-male',
+                        'female' => 'bi-gender-female',
+                        'other' => 'bi-gender-ambiguous',
+                    })
+                    ->color(fn (string $state): string => match ($state) {
+                        'male' => 'info',
+                        'female' => 'danger',
+                        'other' => 'gray',
+                        default => 'gray',
+                    }),
+                TextEntry::make('userBio.birthday')
+                    ->label('Birthday')
+                    ->date(),
+                TextEntry::make('userBio.age')
+                    ->label('Age')
+                    ->numeric(),
+                
+
+            ]);
+    }
 
     public static function getRelations(): array
     {
-        return [];
+        return [
+           AppointmentRelationManager::class
+        ];
     }
 
     public static function getPages(): array

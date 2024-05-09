@@ -3,7 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\DentistResource\Pages;
-use App\Filament\Resources\DentistResource\RelationManagers;
+use App\Filament\Resources\DentistResource\RelationManagers\AppointmentRelationManager;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -23,7 +23,9 @@ class DentistResource extends Resource
 
     protected static ?string $modelLabel = 'Dentists';
 
-    protected static ?string $navigationGroup = 'Users';
+    protected static ?string $navigationGroup = 'People';
+
+    protected static ?int $navigationSort = 1;
 
     protected static ?string $navigationLabel = 'Dentists';
 
@@ -80,8 +82,8 @@ class DentistResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
-        ];
+            AppointmentRelationManager::class
+            ];
     }
 
     public static function getPages(): array
