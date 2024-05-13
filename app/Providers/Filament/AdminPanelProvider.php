@@ -27,6 +27,7 @@ use Rawilk\ProfileFilament\Filament\Clusters\Profile\Settings;
 use Awcodes\LightSwitch\LightSwitchPlugin;
 use Awcodes\LightSwitch\Enums\Alignment;
 use Filament\Navigation\NavigationGroup;
+use Filament\Navigation\NavigationItem;
 use Hasnayeen\Themes\ThemesPlugin;
 use Hasnayeen\Themes\Http\Middleware\SetTheme;
 
@@ -51,10 +52,14 @@ class AdminPanelProvider extends PanelProvider
                 Pages\Dashboard::class,
             ])
             ->navigationGroups([
+
                 NavigationGroup::make()
                     ->label('People'),
                 NavigationGroup::make()
-                    ->label('Transaction')
+                    ->label('Items'),
+                NavigationGroup::make()
+                    ->label('Transaction'),
+
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([

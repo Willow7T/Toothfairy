@@ -36,7 +36,7 @@ class PatientsResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'vaadin-dental-chair';
+    protected static ?string $navigationIcon = 'ri-contacts-book-3-line';
 
     protected static ?string $label = 'Patients';
 

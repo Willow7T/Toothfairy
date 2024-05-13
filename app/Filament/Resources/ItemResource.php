@@ -17,7 +17,15 @@ class ItemResource extends Resource
 {
     protected static ?string $model = Item::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'fluentui-toolbox-24-o';
+
+    protected static ?string $modelLabel = 'Lab Items';
+
+    protected static ?string $navigationGroup = 'Items';
+
+    protected static ?int $navigationSort = 3;
+
+    protected static ?string $navigationLabel = 'Lab Items';
 
     public static function form(Form $form): Form
     {

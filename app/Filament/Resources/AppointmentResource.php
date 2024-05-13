@@ -6,7 +6,6 @@ use App\Filament\Resources\AppointmentResource\Pages;
 use App\Models\Appointment;
 use App\Models\Treatment;
 use App\Models\User;
-use Blueprint\Models\Column;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
@@ -28,7 +27,7 @@ class AppointmentResource extends Resource
 {
     protected static ?string $model = Appointment::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'vaadin-dental-chair';
 
     protected static ?string $label = 'Appointments';
 

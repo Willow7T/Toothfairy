@@ -5,10 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Appointment extends Model
 {
     use HasFactory;
+    use SoftDeletes;
+    
     protected $fillable = [
         'patient_id', 'dentist_id', 'appointment_date', 'status', 'calculated_fee', 'discount', 'total_fee', 'description'
     ];

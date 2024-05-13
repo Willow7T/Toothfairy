@@ -18,8 +18,8 @@ return new class extends Migration
             $table->id();
             $table->string('name', 100);
             $table->text('description')->nullable();
-            $table->decimal('price_min', 10, 2)->nullable();
-            $table->decimal('price_max', 10, 2)->nullable();
+            $table->decimal('price_min', 8, 2)->nullable();
+            $table->decimal('price_max', 8, 2)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -55,7 +55,7 @@ return new class extends Migration
             ['name' => 'Jacket Crown (E-Max)','description'=>null, 'price_min' => 150000, 'price_max' => 200000,'created_at'=>now(),'updated_at'=>now()],
             ['name' => 'Jacket Crown (Gold)','description'=>null, 'price_min' => 25000, 'price_max' => 30000,'created_at'=>now(),'updated_at'=>now()],
             ['name' => 'Jacket Crown (NPG)','description'=>null, 'price_min' => 40000, 'price_max' => 50000,'created_at'=>now(),'updated_at'=>now()],
-            ['name' => 'Jacket Crown (Ni Cr)','description'=>null, 'price_min' => 40000, 'price_max' => 50000],
+            ['name' => 'Jacket Crown (Ni Cr)','description'=>null, 'price_min' => 40000, 'price_max' => 50000,'created_at'=>now(),'updated_at'=>now()],
             ['name' => 'Jacket Crown (Porcelain)','description'=>null, 'price_min' => 100000, 'price_max' => 150000,'created_at'=>now(),'updated_at'=>now()],
             ['name' => 'Denture-Full/Full (Acrylic)','description'=>'Japan', 'price_min' => 240000, 'price_max' => 300000,'created_at'=>now(),'updated_at'=>now()],
             ['name' => 'Denture-Full/Full (Skeletal)','description'=>null, 'price_min' => 450000, 'price_max' => 500000,'created_at'=>now(),'updated_at'=>now()],

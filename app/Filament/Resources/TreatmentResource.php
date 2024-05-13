@@ -20,7 +20,14 @@ class TreatmentResource extends Resource
 {
     protected static ?string $model = Treatment::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-beaker';
+    protected static ?string $navigationIcon = 'ri-health-book-line';
+
+    protected static ?string $navigationGroup = 'Items';
+
+    protected static ?int $navigationSort = 1;
+
+
+
 
     public static function form(Form $form): Form
     {

@@ -14,19 +14,20 @@ return new class extends Migration
         Schema::create('appointments', function (Blueprint $table) {
             $table->id();
             //user_id but patient role
-            $table->unsignedBigInteger('patient_id')->constrained('users')->onDelete('cascade');
+            $table->unsignedBigInteger('patient_id')->nullable();
             //user_id but doctor role
-            $table->unsignedBigInteger('dentist_id')->constrained('users')->onDelete('cascade');
+            $table->unsignedBigInteger('dentist_id')->nullable();
             $table->date('appointment_date')->nullable();
             $table->enum('status', ['pending','cancelled', 'completed'])->default('pending');
-            $table->decimal('calculated_fee', 10, 2)->nullable();
-            $table->decimal('discount', 10, 2)->nullable();
-            $table->decimal('total_fee', 10, 2)->nullable();
+            $table->decimal('calculated_fee', 8, 2)->nullable();
+            $table->decimal('discount', 8, 2)->nullable();
+            $table->decimal('total_fee', 8, 2)->nullable();
             $table->mediumText('description')->nullable();
             $table->timestamps();
+            $table->softDeletes();
 
-            $table->foreign('patient_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('dentist_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('patient_id')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('dentist_id')->references('id')->on('users')->onDelete('set null');
 
         });
         Schema::create('appointment_treatment', function (Blueprint $table) {

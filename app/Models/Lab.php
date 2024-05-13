@@ -11,7 +11,7 @@ class Lab extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = ['name', 'address', 'phone', 'email', 'website'];
+    protected $fillable = ['name', 'address', 'phone_no', 'email', 'website'];
 
     public function items()
     {
