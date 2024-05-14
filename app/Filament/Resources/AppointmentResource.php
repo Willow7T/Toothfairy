@@ -14,28 +14,30 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Wizard;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
+use Filament\Support\RawJs;
 use Filament\Tables;
 use Filament\Tables\Columns\ColumnGroup;
 use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Termwind\Components\Raw;
 
 class AppointmentResource extends Resource
 {
     protected static ?string $model = Appointment::class;
 
-    protected static ?string $navigationIcon = 'vaadin-dental-chair';
-
-    protected static ?string $label = 'Appointments';
-
     protected static ?string $modelLabel = 'Appointments';
 
-    protected static ?string $navigationGroup = 'Transaction';
+    protected static ?string $navigationGroup = 'Transactions';
 
-    protected static ?string $navigationLabel = 'Appointments';
+    //protected static bool $isDiscovered = false;
+
+
 
 
     public static function form(Form $form): Form
@@ -76,9 +78,9 @@ class AppointmentResource extends Resource
                             ])
                             ->default('pending')
                             ->required(),
-                    
-                        ]),
 
+                    ]),
+                
                 Repeater::make('treatments')
                     ->relationship('treatments')
                     ->columnSpan(4)
@@ -89,7 +91,7 @@ class AppointmentResource extends Resource
                         Select::make('treatment_id')
                             ->label('Treatment')
                             ->relationship('treatment', 'name')
-                            ->live()
+                            ->live(debounce: 10)
                             ->searchable()
                             //orderedby last update
                             ->options(Treatment::orderBy('updated_at', 'desc')->get()->pluck('name', 'id'))
@@ -105,6 +107,12 @@ class AppointmentResource extends Resource
                             })
                             ->required(),
                         Fieldset::make('Price Range')
+                            ->live(onBlur: true)
+                            ->afterStateUpdated(function (Set $set, Get $get) {
+                                $price = $get('price');
+                                $quantity = $get('quantity');
+                                $set('calculated_fee', $price * $quantity);
+                            })
                             ->schema([
                                 Placeholder::make('price_min')
                                     ->label('Minimum Price')
@@ -121,40 +129,31 @@ class AppointmentResource extends Resource
                                     ->label('Quantity')
                                     ->numeric()
                                     ->default(1)
-                                    // ->live(onBlur: true)
-                                    // ->afterStateUpdated(function (Set $set, Get $get) {
-                                    //     $price = $get('price');
-                                    //     $quantity = $get('quantity');
-                                    //     $set('calculated_fee', $price * $quantity);
-                                    // })
                                     ->required(),
                                 TextInput::make('price')
                                     ->columnSpan(['xl' => 1, 'lg' => 2, 'md' => 2, 'sm' => 2])
                                     ->label('Price')
-                                    ->numeric()
+                                    ->numeric()->mask(RawJs::make('$money($input)'))
+                                    ->stripCharacters(',')
                                     ->suffix('kyats')
                                     ->default(0)
                                     ->prefixIcon('heroicon-o-banknotes')
-                                    // ->live(onBlur: true)
-                                    // ->afterStateUpdated(function (Set $set, Get $get) {
-                                    //     $price = $get('price');
-                                    //     $quantity = $get('quantity');
-                                    //     $set('calculated_fee', $price * $quantity);
-                                    // })
                                     ->required(),
-                                // Placeholder::make('calculated_fee')
-                                //     ->label('Calculated Fee')
-                                //     ->content(function (Get $get): string {
-                                //         $price = $get('price');
-                                //         $quantity = $get('quantity');
-                                //         return number_format($price * $quantity) . ' kyats';
-                                //     }),
-                                ]),
-           ]),
+                            ]),
+                        Placeholder::make('calculated_fee')
+                            ->label('Calculated Fee')
+                            ->content(function (Get $get): string {
+                                $price = $get('price');
+                                $quantity = $get('quantity');
+                                return number_format($price * $quantity) . ' kyats';
+                            }),
+
+                    ]),
                 TextInput::make('discount')
                     ->placeholder('Discount')
                     ->label('Discount')
-                    ->numeric()
+                    ->numeric()->mask(RawJs::make('$money($input)'))
+                    ->stripCharacters(',')
                     ->columnSpanFull()
                     ->default('0')
                     ->suffix('kyats')
@@ -166,8 +165,6 @@ class AppointmentResource extends Resource
                     ->columnSpanFull()
                     ->autosize()
                     ->rows(2),
-
-
             ]);
     }
 

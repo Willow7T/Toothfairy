@@ -10,6 +10,7 @@ use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Form;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
+use Filament\Support\RawJs;
 use Filament\Tables;
 use Filament\Tables\Columns\ColumnGroup;
 use Filament\Tables\Table;
@@ -20,11 +21,10 @@ class TreatmentResource extends Resource
 {
     protected static ?string $model = Treatment::class;
 
-    protected static ?string $navigationIcon = 'ri-health-book-line';
+    protected static ?string $modelLabel = 'Treatments';
 
     protected static ?string $navigationGroup = 'Items';
 
-    protected static ?int $navigationSort = 1;
 
 
 
@@ -45,13 +45,15 @@ class TreatmentResource extends Resource
                     ->schema([
                         TextInput::make('price_min')
                             ->label('Price Minimum')
-                            ->numeric()
+                            ->numeric()->mask(RawJs::make('$money($input)'))
+                            ->stripCharacters(',')
                             ->required()
                             ->prefixIcon('heroicon-o-banknotes')
                             ->suffix('kyats'),
                         TextInput::make('price_max')
                             ->label('Price Maxium')
-                            ->numeric()
+                            ->numeric()->mask(RawJs::make('$money($input)'))
+                            ->stripCharacters(',')
                             ->required()
                             ->prefixIcon('heroicon-o-banknotes')
                             ->suffix('kyats'),

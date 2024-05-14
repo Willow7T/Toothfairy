@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Item extends Model
@@ -13,8 +14,8 @@ class Item extends Model
     
     protected $fillable = ['name', 'description', 'price'];
 
-    public function labs()
+    public function labs(): HasMany
     {
-        return $this->belongsToMany(Lab::class);
+        return $this->hasMany(LabItem::class);
     }
 }

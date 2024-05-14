@@ -13,17 +13,16 @@ return new class extends Migration
     {
         Schema::create('items', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('lab_id');
             $table->string('name');
             $table->text('description')->nullable();
-            $table->decimal('price', 8, 2);
             $table->timestamps();
             $table->softDeletes();
         });
-        Schema::create('lab_item', function (Blueprint $table) {
+        Schema::create('lab_items', function (Blueprint $table) {
             $table->unsignedBigInteger('lab_id');
             $table->unsignedBigInteger('item_id');
             $table->primary(['lab_id', 'item_id']);
+            $table->decimal('price', 8, 2);
 
             $table->foreign('lab_id')->references('id')->on('labs')->onDelete('cascade');
             $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');

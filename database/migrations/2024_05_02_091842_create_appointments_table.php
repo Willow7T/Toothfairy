@@ -30,7 +30,7 @@ return new class extends Migration
             $table->foreign('dentist_id')->references('id')->on('users')->onDelete('set null');
 
         });
-        Schema::create('appointment_treatment', function (Blueprint $table) {
+        Schema::create('appointment_treatments', function (Blueprint $table) {
             $table->id(); // Auto-incrementing primary key
             $table->foreignId('appointment_id')->constrained()->onDelete('cascade'); // Foreign key to the appointments table
             $table->foreignId('treatment_id')->constrained()->onDelete('cascade'); // Foreign key to the treatments table

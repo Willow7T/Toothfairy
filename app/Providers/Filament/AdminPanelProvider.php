@@ -3,6 +3,8 @@
 namespace App\Providers\Filament;
 
 //use App\Livewire\CustomProfileInfo;
+
+use App\Filament\Resources;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -26,8 +28,10 @@ use Rawilk\ProfileFilament\Features;
 use Rawilk\ProfileFilament\Filament\Clusters\Profile\Settings;
 use Awcodes\LightSwitch\LightSwitchPlugin;
 use Awcodes\LightSwitch\Enums\Alignment;
+use Filament\Navigation\MenuItem;
 use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
+use Filament\Pages\Dashboard;
 use Hasnayeen\Themes\ThemesPlugin;
 use Hasnayeen\Themes\Http\Middleware\SetTheme;
 
@@ -58,9 +62,79 @@ class AdminPanelProvider extends PanelProvider
                 NavigationGroup::make()
                     ->label('Items'),
                 NavigationGroup::make()
-                    ->label('Transaction'),
+                    ->label('Transactions'),
 
             ])
+            ->navigationItems([
+                // NavigationItem::make('Analytics')
+                //     ->url('https://filament.pirsch.io', shouldOpenInNewTab: true)
+                //     ->icon('heroicon-o-presentation-chart-line')
+                //     ->group('Reports')
+                //     ->sort(3),
+                NavigationItem::make('dashboard')
+                    ->label(fn (): string => __('filament-panels::pages/dashboard.title'))
+                    ->icon('heroicon-o-home')
+                    ->url(fn (): string => Dashboard::getUrl())
+                    ->isActiveWhen(fn () => request()->routeIs('filament.admin.pages.dashboard')),
+
+                NavigationItem::make('dentist')
+                    ->label('Dentists')
+                    ->icon('healthicons-o-doctor-male')
+                    ->url(fn (): string => Resources\DentistResource::getUrl())
+                    ->group('People')
+                    ->sort(0),
+                NavigationItem::make('patient')
+                    ->label('Patients')
+                    ->icon('ri-contacts-book-3-line')
+                    ->url(fn (): string => Resources\PatientsResource::getUrl())
+                    ->group('People')
+                    ->sort(1),
+                    // NavigationItem::make('paitent.create')
+                    // ->label('Create Patient')
+                    // ->icon('ri-contacts-book-3-line')
+                    // ->group('People')
+                    // ->url(fn (): string => Resources\PatientsResource\Pages\CreatePatients::getUrl()),
+
+                NavigationItem::make('lab')
+                    ->label('Labs')
+                    ->icon('fluentui-dentist-16-o') 
+                    ->url(fn (): string => Resources\LabResource::getUrl())
+                    ->group('Items')
+                    ->sort(0),
+                NavigationItem::make('item')
+                    ->label('Lab Items')
+                    ->icon('fluentui-toolbox-24-o')
+                    ->url(fn (): string => Resources\ItemResource::getUrl())
+                    ->group('Items')
+                    ->sort(1),
+                NavigationItem::make('treatment')
+                    ->label('Treatments')
+                    ->icon('ri-health-book-line')
+                    ->url(fn (): string => Resources\TreatmentResource::getUrl())
+                    ->group('Items')
+                    ->sort(2),
+
+                NavigationItem::make('appointment')
+                    ->label('Appointments')
+                    ->icon('vaadin-dental-chair')
+                    ->url(fn (): string => Resources\AppointmentResource::getUrl())
+                    ->group('Transactions')
+                    ->sort(0),
+                    // NavigationItem::make('purchase')
+                    // ->label('Purchases')
+                    // //->url(fn (): string => Resources\PurchaseResource::getUrl())
+                    // ->group('Transaction')
+                    // ->sort(1),
+
+
+            ])
+            ->userMenuItems([
+                'Settings' => MenuItem::make()->label('Settings')
+                    ->icon('heroicon-o-cog')
+                    ->sort(0)
+                    ->url(fn (): string => Settings::getUrl()),
+            ])
+
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 //Widgets\AccountWidget::class,
@@ -89,10 +163,7 @@ class AdminPanelProvider extends PanelProvider
                 [
                     LightSwitchPlugin::make()
                         ->position(Alignment::BottomCenter),
-
-
                     ThemesPlugin::make(),
-
                     BreezyCore::make()
                         ->avatarUploadComponent(
                             fn () =>
@@ -113,12 +184,14 @@ class AdminPanelProvider extends PanelProvider
                         )->withoutMyProfileComponents([
                             'update_password'
                         ]),
-
-
                     ProfileFilamentPlugin::make()
-                        ->usingRootProfilePage(Settings::class)
+                        //->usingRootProfilePage(Settings::class)
+                        ->usingClusterSlug('profile')
                         ->profile(
                             enabled: false,
+                        )
+                        ->accountSettings(
+                            slug: 'account',
                         )
                         ->features(
                             Features::defaults()

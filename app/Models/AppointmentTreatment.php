@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 class AppointmentTreatment extends Pivot
 {
     use HasFactory;
+
+    protected $table = 'appointment_treatments';
     protected $fillable = [
         'appointment_id', 'treatment_id', 'price','quantity'
     ];

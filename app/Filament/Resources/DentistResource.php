@@ -17,17 +17,10 @@ class DentistResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'healthicons-o-doctor-male';
-
-    protected static ?string $label = 'Dentists';
-
     protected static ?string $modelLabel = 'Dentists';
 
     protected static ?string $navigationGroup = 'People';
 
-    protected static ?int $navigationSort = 1;
-
-    protected static ?string $navigationLabel = 'Dentists';
 
     public static function form(Form $form): Form
     {
