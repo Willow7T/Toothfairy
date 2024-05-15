@@ -19,13 +19,11 @@ return new class extends Migration
             $table->softDeletes();
         });
         Schema::create('lab_items', function (Blueprint $table) {
-            $table->unsignedBigInteger('lab_id');
-            $table->unsignedBigInteger('item_id');
-            $table->primary(['lab_id', 'item_id']);
-            $table->decimal('price', 8, 2);
-
-            $table->foreign('lab_id')->references('id')->on('labs')->onDelete('cascade');
-            $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');
+            $table->id();
+            $table->foreignId('lab_id')->constrained()->onDelete('cascade');
+            $table->foreignId('item_id')->constrained()->onDelete('cascade');
+            $table->decimal('price', 12, 2);
+            $table->timestamps();
         });
     }
 
@@ -34,7 +32,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('lab_item');
+        Schema::dropIfExists('lab_items');
         Schema::dropIfExists('items');
     }
 };

@@ -21,10 +21,13 @@ class TreatmentResource extends Resource
 {
     protected static ?string $model = Treatment::class;
 
+    protected static ?string $navigationIcon = 'ri-health-book-line';
+    
     protected static ?string $modelLabel = 'Treatments';
 
     protected static ?string $navigationGroup = 'Items';
 
+    protected static ?int $navigationSort = 0;
 
 
 

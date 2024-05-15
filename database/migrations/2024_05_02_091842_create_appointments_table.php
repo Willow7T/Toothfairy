@@ -19,9 +19,9 @@ return new class extends Migration
             $table->unsignedBigInteger('dentist_id')->nullable();
             $table->date('appointment_date')->nullable();
             $table->enum('status', ['pending','cancelled', 'completed'])->default('pending');
-            $table->decimal('calculated_fee', 8, 2)->nullable();
-            $table->decimal('discount', 8, 2)->nullable();
-            $table->decimal('total_fee', 8, 2)->nullable();
+            $table->decimal('calculated_fee', 12, 2)->nullable();
+            $table->decimal('discount', 12, 2)->nullable();
+            $table->decimal('total_fee', 12, 2)->nullable();
             $table->mediumText('description')->nullable();
             $table->timestamps();
             $table->softDeletes();
@@ -33,9 +33,9 @@ return new class extends Migration
         Schema::create('appointment_treatments', function (Blueprint $table) {
             $table->id(); // Auto-incrementing primary key
             $table->foreignId('appointment_id')->constrained()->onDelete('cascade'); // Foreign key to the appointments table
-            $table->foreignId('treatment_id')->constrained()->onDelete('cascade'); // Foreign key to the treatments table
+            $table->foreignId('treatment_id')->constrained()->onDelete('restrict'); // Foreign key to the treatments table
             $table->integer('quantity')->default(1); // Quantity of the treatment at the time of appointment
-            $table->decimal('price', 10, 2)->nullable(); // Price of the treatment at the time of appointment
+            $table->decimal('price', 12, 2)->nullable(); // Price of the treatment at the time of appointment
             $table->timestamps(); // Timestamps for created_at and updated_at
         });
     }

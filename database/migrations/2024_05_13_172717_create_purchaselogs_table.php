@@ -13,27 +13,25 @@ return new class extends Migration
     {
         Schema::create('purchaselogs', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->nullable();
-            $table->decimal('total', 8, 2);
+            $table->decimal('total_expense', 12, 2)->nullable();
             $table->date('purchase_date');
             $table->mediumText('description')->nullable();
             $table->timestamps();
             $table->softDeletes();
-
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
         });
 
-        Schema::create('purchaselog_item', function (Blueprint $table) {
+        Schema::create('purchaselog_items', function (Blueprint $table) {
+            $table->id();
             $table->unsignedBigInteger('purchaselog_id');
-            $table->unsignedBigInteger('item_id');
+            $table->unsignedBigInteger('labitem_id');
             $table->integer('quantity');
-            $table->decimal('price', 8, 2);
+            $table->decimal('price', 12, 2);
             $table->timestamps();
 
-            $table->foreign('purchaselog_id')->references('id')->on('purchaselogs')->onDelete('cascade');
-            $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');
 
-            $table->primary(['purchaselog_id', 'item_id']);
+            $table->foreign('purchaselog_id')->references('id')->on('purchaselogs')->onDelete('cascade');
+            $table->foreign('labitem_id')->references('id')->on('lab_items')->onDelete('restrict');
+
         });
     }
 

@@ -21,10 +21,14 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class LabResource extends Resource
 {
     protected static ?string $model = Lab::class;
+   
+    protected static ?string $navigationIcon = 'fluentui-dentist-16-o';
 
     protected static ?string $modelLabel = 'Lab';
 
     protected static ?string $navigationGroup = 'Items';
+
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
@@ -70,15 +74,16 @@ class LabResource extends Resource
                     ->label('Address'),
                 TextColumn::make('website')
                     ->label('Website')
+                    ->copyable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 PhoneNumberColumn::make('phone_no')
                     ->label('Phone number')
                     ->displayFormat(PhoneFormat::INTERNATIONAL)
                     ->dial(),
                 TextColumn::make('created_at')
-                    ->dateTime(),
+                    ->dateTime()->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
-                    ->dateTime(),
+                    ->dateTime()->toggleable(isToggledHiddenByDefault: true),
 
             ])
             ->filters([

@@ -18,8 +18,8 @@ return new class extends Migration
             $table->id();
             $table->string('name', 100);
             $table->text('description')->nullable();
-            $table->decimal('price_min', 8, 2)->nullable();
-            $table->decimal('price_max', 8, 2)->nullable();
+            $table->decimal('price_min', 12, 2)->nullable();
+            $table->decimal('price_max', 12, 2)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

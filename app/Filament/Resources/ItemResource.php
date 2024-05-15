@@ -14,6 +14,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Support\RawJs;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -22,10 +23,13 @@ class ItemResource extends Resource
 {
     protected static ?string $model = Item::class;
 
-    protected static ?string $modelLabel = 'Lab Item';
+    protected static ?string $modelLabel = 'Lab Items';
+
+    protected static ?string $navigationIcon = 'fluentui-toolbox-24-o';
 
     protected static ?string $navigationGroup = 'Items';
 
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
@@ -44,8 +48,7 @@ class ItemResource extends Resource
                     ->schema([
                         Select::make('lab_id')
                             ->label('Lab')
-                            //user role must be 3 (patient) relation
-                            ->relationship('labs', 'name')
+                            ->relationship('lab', 'name')
                             ->options(Lab::get()->pluck('name', 'id'))
                             ->searchable()
                             ->required()
@@ -66,7 +69,17 @@ class ItemResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('name')
+                    ->searchable()
+                    ->label('Item name'),
+                TextColumn::make('labs.lab.name')
+                        ->label('Lab')
+                        ->listWithLineBreaks()
+                        ->bulleted(),
+                TextColumn::make('labs.price')
+                        ->label('Price')
+                        ->listWithLineBreaks()
+                        ->bulleted(),
             ])
             ->filters([
                 //

@@ -19,7 +19,7 @@ class Purchaselog extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function items() : HasMany
+    public function purchaselogitems() : HasMany
     {
         return $this->hasMany(PurchaselogItem::class);
     }

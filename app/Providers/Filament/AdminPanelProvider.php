@@ -97,22 +97,22 @@ class AdminPanelProvider extends PanelProvider
 
                 NavigationItem::make('lab')
                     ->label('Labs')
-                    ->icon('fluentui-dentist-16-o') 
                     ->url(fn (): string => Resources\LabResource::getUrl())
                     ->group('Items')
-                    ->sort(0),
+                    ->icon('fluentui-dentist-16-o') 
+                    ->sort(1),
                 NavigationItem::make('item')
                     ->label('Lab Items')
-                    ->icon('fluentui-toolbox-24-o')
                     ->url(fn (): string => Resources\ItemResource::getUrl())
                     ->group('Items')
-                    ->sort(1),
+                    ->icon('fluentui-toolbox-24-o')
+                    ->sort(2),
                 NavigationItem::make('treatment')
                     ->label('Treatments')
-                    ->icon('ri-health-book-line')
                     ->url(fn (): string => Resources\TreatmentResource::getUrl())
+                    ->icon('ri-health-book-line')
                     ->group('Items')
-                    ->sort(2),
+                    ->sort(0),
 
                 NavigationItem::make('appointment')
                     ->label('Appointments')
@@ -120,11 +120,12 @@ class AdminPanelProvider extends PanelProvider
                     ->url(fn (): string => Resources\AppointmentResource::getUrl())
                     ->group('Transactions')
                     ->sort(0),
-                    // NavigationItem::make('purchase')
-                    // ->label('Purchases')
-                    // //->url(fn (): string => Resources\PurchaseResource::getUrl())
-                    // ->group('Transaction')
-                    // ->sort(1),
+                    NavigationItem::make('purchaselog')
+                    ->label('Expenses')
+                    ->icon('heroicon-o-shopping-cart')
+                    ->url(fn (): string => Resources\PurchaselogResource::getUrl())
+                    ->group('Transactions')
+                    ->sort(1),
 
 
             ])

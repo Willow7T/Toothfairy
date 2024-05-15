@@ -36,11 +36,6 @@ class AppointmentResource extends Resource
 
     protected static ?string $navigationGroup = 'Transactions';
 
-    //protected static bool $isDiscovered = false;
-
-
-
-   
     public static function form(Form $form): Form
     {
         return $form
@@ -92,7 +87,7 @@ class AppointmentResource extends Resource
                         Select::make('treatment_id')
                             ->label('Treatment')
                             ->relationship('treatment', 'name')
-                            ->live(debounce: 10)
+                            ->live(onBlur: true)
                             ->searchable()
                             //orderedby last update
                             ->options(Treatment::orderBy('updated_at', 'desc')->get()->pluck('name', 'id'))
@@ -134,8 +129,7 @@ class AppointmentResource extends Resource
                                 TextInput::make('price')
                                     ->columnSpan(['xl' => 1, 'lg' => 2, 'md' => 2, 'sm' => 2])
                                     ->label('Price')
-                                    ->numeric()->mask(RawJs::make('$money($input)'))
-                                    ->stripCharacters(',')
+                                    ->numeric()
                                     ->suffix('kyats')
                                     ->default(0)
                                     ->prefixIcon('heroicon-o-banknotes')
@@ -179,6 +173,19 @@ class AppointmentResource extends Resource
                     ->label('Appointment Date'),
                 TextColumn::make('dentist.name'),
                 TextColumn::make('patient.name'),
+
+                ColumnGroup::make('Price', [
+                    TextColumn::make('calculated_fee')
+                        ->label('Without Discount')
+                        ->suffix(' kyats')->toggleable(isToggledHiddenByDefault: true),
+                    TextColumn::make('discount')
+                        ->label('Discount')
+                        ->suffix(' kyats')->toggleable(isToggledHiddenByDefault: true),
+                    TextColumn::make('total_fee')
+                        ->label('Total Cost')
+                        ->suffix(' kyats')->toggleable(isToggledHiddenByDefault: true),
+                ]),
+                
                 ColumnGroup::make('Treatments', [
                     TextColumn::make('treatments.treatment.name')
                         ->label('Treatment')
@@ -193,17 +200,7 @@ class AppointmentResource extends Resource
                         ->listWithLineBreaks()
                         ->bulleted()->toggleable(isToggledHiddenByDefault: true),
                 ]),
-                ColumnGroup::make('Price', [
-                    TextColumn::make('calculated_fee')
-                        ->label('Without Discount')
-                        ->suffix(' kyats')->toggleable(isToggledHiddenByDefault: true),
-                    TextColumn::make('discount')
-                        ->label('Discount')
-                        ->suffix(' kyats')->toggleable(isToggledHiddenByDefault: true),
-                    TextColumn::make('total_fee')
-                        ->label('Total Cost')
-                        ->suffix(' kyats')->toggleable(isToggledHiddenByDefault: true),
-                ]),
+               
                 SelectColumn::make('status')
                     ->label('Status')
                     ->options([

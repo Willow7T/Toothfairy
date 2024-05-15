@@ -9,7 +9,7 @@ class PurchaselogItem extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'purchaselog_id', 'item_id','quantity','price'
+        'purchaselog_id', 'labitem_id','quantity','price'
     ];
     
 
@@ -18,8 +18,8 @@ class PurchaselogItem extends Model
         return $this->belongsTo(Purchaselog::class);
     }
 
-    public function item()
+    public function labitem()
     {
-        return $this->belongsTo(Item::class);
+        return $this->belongsTo(LabItem::class);
     }
 }
