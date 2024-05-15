@@ -23,8 +23,8 @@ class ViewAppointment extends ViewRecord
                     $patient = $appointment->patient;
                     $treatments = $appointment->treatments;
 
-                    $data = compact('treatments', 'patient');
-                    $pdf = Pdf::loadView('appointmentprint', $data);
+                    $data = compact('treatments', 'patient','appointment');
+                    $pdf = Pdf::loadView('printables.appointmentprint', $data);
 
                     // Save the PDF to a temporary file
                     $tempFile = tempnam(sys_get_temp_dir(), 'appointment') . '.pdf';
