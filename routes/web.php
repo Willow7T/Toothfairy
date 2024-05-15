@@ -21,4 +21,11 @@ Route::middleware([
     'web',
 ])->group(function () {
     Route::webauthn();
+    Route::get('/temp/{filename}', function ($filename) {
+        $path = sys_get_temp_dir() . '/' . $filename;
+        if (file_exists($path)) {
+            return response()->file($path);
+        }
+        abort(404);
+    });
 });

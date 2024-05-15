@@ -27,6 +27,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Termwind\Components\Raw;
 
+
 class AppointmentResource extends Resource
 {
     protected static ?string $model = Appointment::class;
@@ -39,7 +40,7 @@ class AppointmentResource extends Resource
 
 
 
-
+   
     public static function form(Form $form): Form
     {
         return $form
@@ -228,8 +229,12 @@ class AppointmentResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make()
-                    ->slideOver(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\EditAction::make()
+                        ->slideOver(),
+                    Tables\Actions\DeleteAction::make(),
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -251,6 +256,8 @@ class AppointmentResource extends Resource
             'index' => Pages\ListAppointments::route('/'),
             'create' => Pages\CreateAppointment::route('/create'),
             //'edit' => Pages\EditAppointment::route('/{record}/edit'),
+            'view' => Pages\ViewAppointment::route('/{record}'),
+
         ];
     }
 }
