@@ -36,28 +36,35 @@
             position: absolute;
         }
 
-        .left {
-            left: 10px;
-        }
+       
 
         .top {
             top: 110px;
         }
+        .top-2 {
+            top: 130px;
+        }
+         .left {
+            left: 10px;
+        }
+        .right {
+            right: 10px;
+        }
+       
 
+       
         .bottom {
             bottom: 10px;
         }
 
-        .right {
-            right: 10px;
-        }
+        
 
         .table {
             border-collapse: collapse;
             border-spacing: 0;
             width: 100%;
             border: 1px solid #5795d7;
-            margin-top: 160px
+            margin-top: 170px
         }
 
         tr:nth-child(even) {
@@ -90,11 +97,15 @@
         {
             padding-top: 30px;
             margin-left: auto;
-            text-align: right;
+            
         }
         .total div
-        {
+        {   text-align: right;
             padding: 2px;
+        }
+        .total p
+        {
+            border-bottom: 1px solid #43a5eb;
         }
     </style>
 </head>

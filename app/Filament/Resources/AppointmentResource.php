@@ -7,6 +7,7 @@ use App\Models\Appointment;
 use App\Models\Treatment;
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Placeholder;
@@ -22,9 +23,15 @@ use Filament\Resources\Resource;
 use Filament\Support\RawJs;
 use Filament\Tables;
 use Filament\Tables\Columns\ColumnGroup;
+use Filament\Tables\Columns\Layout\Panel;
+use Filament\Tables\Columns\Layout\Split;
+use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Termwind\Components\Raw;
 
 
@@ -76,7 +83,7 @@ class AppointmentResource extends Resource
                             ->required(),
 
                     ]),
-                
+
                 Repeater::make('treatments')
                     ->relationship('treatments')
                     ->columnSpan(4)
@@ -100,6 +107,7 @@ class AppointmentResource extends Resource
                                 //update the placeholder field
                                 $set('price_min', $treatment->price_min);
                                 $set('price_max', $treatment->price_max);
+                                $set('price', $treatment->price_max);
                             })
                             ->required(),
                         Fieldset::make('Price Range')
@@ -144,16 +152,31 @@ class AppointmentResource extends Resource
                             }),
 
                     ]),
-                TextInput::make('discount')
-                    ->placeholder('Discount')
-                    ->label('Discount')
-                    ->numeric()->mask(RawJs::make('$money($input)'))
-                    ->stripCharacters(',')
-                    ->columnSpanFull()
-                    ->default('0')
-                    ->suffix('kyats')
-                    ->prefixIcon('heroicon-o-currency-dollar')
-                    ->required(),
+                Fieldset::make('Discount')
+                    ->schema([
+                        TextInput::make('discount')
+                            ->label('Discount')
+                            ->numeric()->mask(RawJs::make('$money($input)'))
+                            ->stripCharacters(',')
+                            ->default('0')
+                            ->minValue(0)
+                            ->suffix('kyats')
+                            ->prefixIcon('heroicon-o-currency-dollar')
+                            ->required(),
+
+                        TextInput::make('discount_percentage')
+                            ->label('Discount Percentage')
+                            ->numeric()->mask(RawJs::make('$money($input)'))
+                            ->stripCharacters(',')
+                            ->default('0')
+                            ->minValue(0)
+                            ->maxValue(100)
+                            ->suffix('%')
+                            ->prefixIcon('heroicon-o-currency-dollar')
+                            ->required(),
+
+                    ]),
+
                 Textarea::make('description')
                     ->placeholder('Remarks')
                     ->label('Descritpion')
@@ -166,64 +189,83 @@ class AppointmentResource extends Resource
 
     public static function table(Table $table): Table
     {
+        //get patient age
+        // $table->column('patient.age', function (Appointment $record) {
+
+        // });
         return $table
             ->columns([
-                TextColumn::make('appointment_date')
-                    ->date()
-                    ->label('Appointment Date'),
-                TextColumn::make('dentist.name'),
-                TextColumn::make('patient.name'),
+                    TextColumn::make('appointment_date')
+                        ->date()
+                        ->label('Appointment Date'),
+                    TextColumn::make('dentist.name'),
 
-                ColumnGroup::make('Price', [
-                    TextColumn::make('calculated_fee')
-                        ->label('Without Discount')
-                        ->suffix(' kyats')->toggleable(isToggledHiddenByDefault: true),
-                    TextColumn::make('discount')
-                        ->label('Discount')
-                        ->suffix(' kyats')->toggleable(isToggledHiddenByDefault: true),
-                    TextColumn::make('total_fee')
-                        ->label('Total Cost')
-                        ->suffix(' kyats')->toggleable(isToggledHiddenByDefault: true),
-                ]),
-                
-                ColumnGroup::make('Treatments', [
-                    TextColumn::make('treatments.treatment.name')
-                        ->label('Treatment')
-                        ->listWithLineBreaks()
-                        ->bulleted()->toggleable(isToggledHiddenByDefault: true),
-                    TextColumn::make('treatments.quantity')
-                        ->label('Quantity')
-                        ->listWithLineBreaks()
-                        ->bulleted()->toggleable(isToggledHiddenByDefault: true),
-                    TextColumn::make('treatments.price')
-                        ->label('Price')
-                        ->listWithLineBreaks()
-                        ->bulleted()->toggleable(isToggledHiddenByDefault: true),
-                ]),
-               
-                SelectColumn::make('status')
+                        TextColumn::make('patient.name'),
+                        TextColumn::make('patient.userbio.age')
+                            ->label('Age')
+                            ->suffix(' years'),
+
+                        TextColumn::make('calculated_fee')
+                            ->label('Without Discount')
+                            ->suffix(' kyats')->toggleable(isToggledHiddenByDefault: true),
+                        TextColumn::make('discount')
+                            ->label('Discount')
+                            ->suffix(' kyats')->toggleable(isToggledHiddenByDefault: true),
+                        TextColumn::make('discount_percentage')
+                            ->label('Discount Percentage')
+                            ->numeric()
+                            //remove decimal
+                            ->suffix('%')->toggleable(isToggledHiddenByDefault: true),
+                        TextColumn::make('total_fee')
+                            ->label('Total Cost')
+                            ->suffix(' kyats')->toggleable(isToggledHiddenByDefault: true),
+
+                        TextColumn::make('treatments.treatment.name')
+                            ->label('Treatment')
+                            ->listWithLineBreaks()
+                            ->bulleted()->toggleable(isToggledHiddenByDefault: true),
+                        TextColumn::make('treatments.quantity')
+                            ->label('Quantity')
+                            ->listWithLineBreaks()
+                            ->bulleted()->toggleable(isToggledHiddenByDefault: true),
+                        TextColumn::make('treatments.price')
+                            ->label('Price')
+                            ->listWithLineBreaks()
+                            ->bulleted()->toggleable(isToggledHiddenByDefault: true),
+
+                        SelectColumn::make('status')
+                            ->label('Status')
+                            ->options([
+                                'pending' => 'Pending',
+                                'completed' => 'Completed',
+                                'cancelled' => 'Cancelled',
+                            ])->toggleable(),
+
+                        TextColumn::make('discription')
+                            ->label('Remarks')
+                            ->toggleable(isToggledHiddenByDefault: true),
+                        TextColumn::make('created_at')
+                            ->label('Created At')
+                            ->since()
+                            ->sortable()
+                            ->toggleable(isToggledHiddenByDefault: true),
+                        TextColumn::make('updated_at')
+                            ->label('Updated At')
+                            ->since()
+                            ->toggleable(isToggledHiddenByDefault: true),
+
+            ])
+
+            ->filters([
+                // Filter::make('is_featured')
+                //     ->query(fn (Builder $query) => $query->where('is_featured', true)),
+                SelectFilter::make('status')
                     ->label('Status')
                     ->options([
                         'pending' => 'Pending',
                         'completed' => 'Completed',
                         'cancelled' => 'Cancelled',
-                    ])->toggleable(),
-
-                TextColumn::make('discription')
-                    ->label('Remarks')
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('created_at')
-                    ->label('Created At')
-                    ->since()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->label('Updated At')
-                    ->since()
-                    ->toggleable(isToggledHiddenByDefault: true),
-            ])
-
-            ->filters([
-                //
+                    ]),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
@@ -237,7 +279,8 @@ class AppointmentResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->defaultSort('created_at', 'desc');
     }
 
     public static function getRelations(): array

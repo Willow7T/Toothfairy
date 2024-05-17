@@ -4,7 +4,12 @@ namespace App\Providers\Filament;
 
 //use App\Livewire\CustomProfileInfo;
 
+use App\Filament\Pages\Dashboard;
 use App\Filament\Resources;
+use App\Filament\Widgets\ExpenseChart;
+use App\Filament\Widgets\IncomeChart;
+use App\Filament\Widgets\SummaryChart;
+use App\Filament\Widgets\SummaryStat;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -12,7 +17,6 @@ use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Widgets;
 use Filament\Forms\Components\FileUpload;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -31,7 +35,7 @@ use Awcodes\LightSwitch\Enums\Alignment;
 use Filament\Navigation\MenuItem;
 use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
-use Filament\Pages\Dashboard;
+use Filament\Widgets\Widget;
 use Hasnayeen\Themes\ThemesPlugin;
 use Hasnayeen\Themes\Http\Middleware\SetTheme;
 
@@ -66,17 +70,17 @@ class AdminPanelProvider extends PanelProvider
 
             ])
             ->navigationItems([
+
+                NavigationItem::make('dashboard')
+                    ->label(fn (): string => __('filament-panels::pages/dashboard.title'))
+                    ->icon('heroicon-o-home')
+                    ->url(fn (): string => Dashboard::getUrl()),
+
                 // NavigationItem::make('Analytics')
                 //     ->url('https://filament.pirsch.io', shouldOpenInNewTab: true)
                 //     ->icon('heroicon-o-presentation-chart-line')
                 //     ->group('Reports')
                 //     ->sort(3),
-                NavigationItem::make('dashboard')
-                    ->label(fn (): string => __('filament-panels::pages/dashboard.title'))
-                    ->icon('heroicon-o-home')
-                    ->url(fn (): string => Dashboard::getUrl())
-                    ->isActiveWhen(fn () => request()->routeIs('filament.admin.pages.dashboard')),
-
                 NavigationItem::make('dentist')
                     ->label('Dentists')
                     ->icon('healthicons-o-doctor-male')
@@ -89,17 +93,12 @@ class AdminPanelProvider extends PanelProvider
                     ->url(fn (): string => Resources\PatientsResource::getUrl())
                     ->group('People')
                     ->sort(1),
-                    // NavigationItem::make('paitent.create')
-                    // ->label('Create Patient')
-                    // ->icon('ri-contacts-book-3-line')
-                    // ->group('People')
-                    // ->url(fn (): string => Resources\PatientsResource\Pages\CreatePatients::getUrl()),
 
                 NavigationItem::make('lab')
                     ->label('Labs')
                     ->url(fn (): string => Resources\LabResource::getUrl())
                     ->group('Items')
-                    ->icon('fluentui-dentist-16-o') 
+                    ->icon('fluentui-dentist-16-o')
                     ->sort(1),
                 NavigationItem::make('item')
                     ->label('Lab Items')
@@ -120,7 +119,7 @@ class AdminPanelProvider extends PanelProvider
                     ->url(fn (): string => Resources\AppointmentResource::getUrl())
                     ->group('Transactions')
                     ->sort(0),
-                    NavigationItem::make('purchaselog')
+                NavigationItem::make('purchaselog')
                     ->label('Expenses')
                     ->icon('heroicon-o-shopping-cart')
                     ->url(fn (): string => Resources\PurchaselogResource::getUrl())
@@ -136,10 +135,16 @@ class AdminPanelProvider extends PanelProvider
                     ->url(fn (): string => Settings::getUrl()),
             ])
 
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
+            //  ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 //Widgets\AccountWidget::class,
-                //Widgets\FilamentInfoWidget::class,
+                // Widgets\FilamentInfoWidget::class,
+                SummaryStat::class,
+                SummaryChart::class,
+                IncomeChart::class,
+                ExpenseChart::class,
+
+
             ])
             ->sidebarWidth('16rem')
             ->maxContentWidth('7xl')

@@ -187,7 +187,8 @@ class PurchaselogResource extends Resource
         return [
             'index' => Pages\ListPurchaselogs::route('/'),
             'create' => Pages\CreatePurchaselog::route('/create'),
-            'edit' => Pages\EditPurchaselog::route('/{record}/edit'),
+            //'edit' => Pages\EditPurchaselog::route('/{record}/edit'),
+            'view' => Pages\ViewPurchaselog::route('/{record}'),    
         ];
     }
 }

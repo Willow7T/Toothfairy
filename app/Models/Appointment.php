@@ -13,7 +13,7 @@ class Appointment extends Model
     use SoftDeletes;
     
     protected $fillable = [
-        'patient_id', 'dentist_id', 'appointment_date', 'status', 'calculated_fee', 'discount', 'total_fee', 'description'
+        'patient_id', 'dentist_id', 'appointment_date', 'status', 'calculated_fee', 'discount','discount_percentage', 'total_fee', 'description'
     ];
 
     public function patient()

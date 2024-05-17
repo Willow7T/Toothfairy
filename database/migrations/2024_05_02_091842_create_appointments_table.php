@@ -21,6 +21,8 @@ return new class extends Migration
             $table->enum('status', ['pending','cancelled', 'completed'])->default('pending');
             $table->decimal('calculated_fee', 12, 2)->nullable();
             $table->decimal('discount', 12, 2)->nullable();
+            //discount in percentage
+            $table->decimal('discount_percentage', 5, 2)->nullable();
             $table->decimal('total_fee', 12, 2)->nullable();
             $table->mediumText('description')->nullable();
             $table->timestamps();

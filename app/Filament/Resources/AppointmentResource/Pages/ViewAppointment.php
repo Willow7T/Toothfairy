@@ -22,8 +22,10 @@ class ViewAppointment extends ViewRecord
                     $appointment = Appointment::find($record->id);
                     $patient = $appointment->patient;
                     $treatments = $appointment->treatments;
+                    $formattedDate = date('F j, Y', strtotime($appointment->appointment_date));
 
-                    $data = compact('treatments', 'patient','appointment');
+
+                    $data = compact('treatments', 'patient','appointment', 'formattedDate');
                     $pdf = Pdf::loadView('printables.appointmentprint', $data);
 
                     // Save the PDF to a temporary file

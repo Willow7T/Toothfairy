@@ -77,6 +77,9 @@ class AppointmentTreatmentObserver
 
         $appointment->calculated_fee = $totalFee;
 
+        // Subtract the discount from the total fee
+        $dicount = $totalFee * ($appointment->discount_percentage / 100);
+        $totalFee = $totalFee - $dicount;
         $totalFee = $totalFee - $appointment->discount;
         // Update the appointment's total_fee
         $appointment->total_fee = $totalFee;
