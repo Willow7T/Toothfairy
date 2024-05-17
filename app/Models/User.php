@@ -57,9 +57,9 @@ class User extends Authenticatable implements MustVerifyNewEmail, FilamentUser, 
 
     protected static function booted(): void
     {
-        // static::creating(function (User $user) {
-        //     $user->role_id = 3;
-        // });
+        static::creating(function (User $user) {
+            $user->role_id = 3;
+        });
     }
 
     public function role(): BelongsTo
@@ -96,11 +96,10 @@ class User extends Authenticatable implements MustVerifyNewEmail, FilamentUser, 
         if ($panel->getId() === 'admin') {
             return $this->role->name === 'admin';
         }
-        else if ($panel->getId() === 'dentist') {
-            return $this->role->name === 'dentist';
+        if ($panel->getId() === 'app') {
+            //all role but user must have role
+            return true;
         }
-        else if ($panel->getId() === 'patient') {
-            return $this->role->name === 'patient';
-        }
+       
     }
 }

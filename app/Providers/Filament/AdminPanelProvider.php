@@ -4,7 +4,6 @@ namespace App\Providers\Filament;
 
 //use App\Livewire\CustomProfileInfo;
 
-use App\Filament\Pages\Dashboard;
 use App\Filament\Resources;
 use App\Filament\Widgets\ExpenseChart;
 use App\Filament\Widgets\IncomeChart;
@@ -35,6 +34,7 @@ use Awcodes\LightSwitch\Enums\Alignment;
 use Filament\Navigation\MenuItem;
 use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
+use Filament\Pages\Dashboard;
 use Filament\Widgets\Widget;
 use Hasnayeen\Themes\ThemesPlugin;
 use Hasnayeen\Themes\Http\Middleware\SetTheme;
@@ -146,9 +146,7 @@ class AdminPanelProvider extends PanelProvider
 
 
             ])
-            ->sidebarWidth('16rem')
-            ->maxContentWidth('7xl')
-            ->sidebarCollapsibleOnDesktop()
+         
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -165,6 +163,10 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
+            ->sidebarWidth('16rem')
+            ->maxContentWidth('7xl')
+            ->sidebarCollapsibleOnDesktop()
+            ->font('Fira Code')
             ->plugins(
                 [
                     LightSwitchPlugin::make()
