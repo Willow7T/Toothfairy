@@ -2,8 +2,10 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\App\Pages\Dashboard;
+//use App\Filament\App\Pages\Dashboard;
 use App\Filament\Pages\Home;
+use App\Filament\Resources\TreatmentResource;
+use App\Filament\Resources\TreatmentResource\Pages\ViewTreatment;
 use App\Http\Middleware\StoreSessionData;
 use Awcodes\LightSwitch\LightSwitchPlugin;
 use Awcodes\LightSwitch\Enums\Alignment;
@@ -42,9 +44,13 @@ class AppPanelProvider extends PanelProvider
                 'primary' => Color::Amber,
             ])
             //->discoverResources(in: app_path('Filament/App/Resources'), for: 'App\\Filament\\App\\Resources')
-            //->discoverPages(in: app_path('Filament/App/Pages'), for: 'App\\Filament\\App\\Pages')
-            ->pages([
+           // ->discoverPages(in: app_path('Filament/App/Pages'), for: 'App\\Filament\\App\\Pages')
+           ->resources([
+                TreatmentResource::class,
+            ]) 
+           ->pages([
                 Home::class,
+                //ViewTreatment::class,
             ])
             ->discoverWidgets(in: app_path('Filament/App/Widgets'), for: 'App\\Filament\\App\\Widgets')
             ->widgets([])
@@ -66,7 +72,9 @@ class AppPanelProvider extends PanelProvider
             ])
             // ->sidebarWidth('16rem')
             ->maxContentWidth('7xl')
+                //->sidebarFullyCollapsibleOnDesktop()
             ->topNavigation()
+            ->breadcrumbs()
             ->plugins(
                 [
                     LightSwitchPlugin::make()

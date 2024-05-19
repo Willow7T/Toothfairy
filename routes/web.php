@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::view('/', 'test')
+Route::view('/', 'welcome')
 ->name('welcome');
 
 // Route::view('home', 'home')

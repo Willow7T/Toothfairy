@@ -5,10 +5,15 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\TreatmentResource\Pages;
 //use App\Filament\Resources\TreatmentResource\RelationManagers;
 use App\Models\Treatment;
+use Dompdf\FrameDecorator\Text;
 use Filament\Forms;
 use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Form;
 use Filament\Forms\Components\TextInput;
+use Filament\Infolists\Components\Fieldset as ComponentsFieldset;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Support\RawJs;
 use Filament\Tables;
@@ -22,7 +27,7 @@ class TreatmentResource extends Resource
     protected static ?string $model = Treatment::class;
 
     protected static ?string $navigationIcon = 'ri-health-book-line';
-    
+
     protected static ?string $modelLabel = 'Treatments';
 
     protected static ?string $navigationGroup = 'Items';
@@ -61,6 +66,14 @@ class TreatmentResource extends Resource
                             ->prefixIcon('heroicon-o-banknotes')
                             ->suffix('kyats'),
                     ]),
+                FileUpload::make('edufile')
+                    ->directory('EduUploads')
+                    ->label('Educational File')
+                    ->previewable(false)
+                    ->moveFiles()
+                    ->acceptedFileTypes(['application/vnd.openxmlformats-officedocument.wordprocessingml.document'])
+                    ->maxFiles(1)
+                    ->helperText('Upload a docx file for educational purposes')
 
             ]);
     }
@@ -71,7 +84,7 @@ class TreatmentResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                ColumnGroup::make('Price Range',[
+                ColumnGroup::make('Price Range', [
                     Tables\Columns\TextColumn::make('price_min')
                         ->suffix(' kyats')
                         ->sortable(),
@@ -108,6 +121,34 @@ class TreatmentResource extends Resource
         return [
             //
         ];
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                TextEntry::make('name'),
+                ComponentsFieldset::make('Price Range')
+                    ->columnSpanFull()
+                    ->schema([
+                        TextEntry::make('price_min')
+                            ->label('Price Minimum')
+                            ->suffix(' kyats'),
+                        TextEntry::make('price_max')
+                            ->label('Price Maximum')
+                            ->suffix(' kyats'),
+                    ])
+                    ->hidden(function () {
+                        // Get the current authenticated user
+                        $user = auth()->user();
+                
+                        // Hide the fieldset if the user's role is 'patient'
+                        return $user->role === 'patient';
+                    }),
+
+
+
+            ]);
     }
 
     public static function getPages(): array

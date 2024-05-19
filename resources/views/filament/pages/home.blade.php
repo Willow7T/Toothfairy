@@ -1,14 +1,17 @@
-{{-- <x-filament-panels::page>
+{{-- <x-filament-panels::page> --}}
+<div 
+    x-data="{}"
+    x-load-css="[@js(\Filament\Support\Facades\FilamentAsset::getStyleHref('customapp'))]"
+
+class="mt-6">
+    {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
     <div>
-        gg
+        <livewire:CardHome />
     </div>
-</x-filament-panels::page> --}}
-<div class="mt-6">
-    <div class="mt-10 bg-gray-600">
-        ded
-    </div>
-    <div class="text-red-500">
-        red shit
+
+
+    <div>
+        <livewire:LoadTreatments />
     </div>
 </div>
-    
+{{-- </x-filament-panels::page> --}}

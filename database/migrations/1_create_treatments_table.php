@@ -20,6 +20,8 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->decimal('price_min', 12, 2)->nullable();
             $table->decimal('price_max', 12, 2)->nullable();
+            //for docx file
+            $table->text('edufile')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -29,7 +31,7 @@ return new class extends Migration
         //Insert Treatments
         DB::table('treatments')
         ->insert([
-            ['name' => 'Examination Fee','description'=>null, 'price_min' => 5000, 'price_max' => 10000,'created_at'=>now(),'updated_at'=>now()],
+            ['name' => 'Examination','description'=>null, 'price_min' => 5000, 'price_max' => 10000,'created_at'=>now(),'updated_at'=>now()],
             ['name' => 'Dressing','description'=>null, 'price_min' => 3000, 'price_max' => 7000,'created_at'=>now(),'updated_at'=>now()],
             ['name' => 'Amalgam Filling','description'=>null, 'price_min' => 12000, 'price_max' => 20000,'created_at'=>now(),'updated_at'=>now()],
             ['name' => 'Glass lonomer Filling','description'=>null, 'price_min' => 10000, 'price_max' => 15000,'created_at'=>now(),'updated_at'=>now()],

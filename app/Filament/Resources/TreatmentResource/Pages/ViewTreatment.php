@@ -18,4 +18,5 @@ class ViewTreatment extends ViewRecord
             ->slideOver(),
         ];
     }
+    
 }

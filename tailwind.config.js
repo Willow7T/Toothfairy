@@ -4,9 +4,17 @@ export default {
     "./resources/**/*.blade.php",
     "./resources/**/*.js",
     "./resources/**/*.vue",
+    "./vendor/filament/**/*.blade.php",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        'postserif' : ['"Poetsen One"', 'sans-serif'],
+        'fira' : ['"Fira Code"', 'monospace'],
+      },
+    },
+    
   },
   plugins: [],
 }
+// Poetsen One "Fira Code", monospace
