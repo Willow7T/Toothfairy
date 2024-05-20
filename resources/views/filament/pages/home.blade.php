@@ -13,5 +13,9 @@ class="mt-6">
     <div>
         <livewire:LoadTreatments />
     </div>
+
+    <div>
+        <livewire:FAQs />
+    </div>
 </div>
 {{-- </x-filament-panels::page> --}}

@@ -8,8 +8,10 @@ use Filament\Support\Assets\Css;
 use Rawilk\ProfileFilament\Features;
 use App\Models\AppointmentTreatment;
 use App\Models\PurchaselogItem;
+use App\Models\Treatment;
 use App\Observers\AppointmentTreatmentObserver;
 use App\Observers\PurchaselogObserver;
+use App\Observers\TreatmentObserver;
 use Filament\Support\Facades\FilamentAsset;
 
 
@@ -34,6 +36,7 @@ class AppServiceProvider extends ServiceProvider
         });
         AppointmentTreatment::observe(AppointmentTreatmentObserver::class);
         PurchaselogItem::observe(PurchaselogObserver::class);
+        Treatment::observe(TreatmentObserver::class);
         FilamentAsset::register([
             Css::make('customapp', __DIR__ . '/../../public/build/assets/app.css')->loadedOnRequest(),
         ]);

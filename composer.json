@@ -28,7 +28,9 @@
         "laravel/tinker": "^2.8",
         "livewire/livewire": "^3.4",
         "livewire/volt": "^1.0",
-        "rawilk/profile-filament-plugin": "^0.3.2",
+        "phpoffice/phpword": "^1.2",
+        "rawilk/profile-filament-plugin": "^0.3.3",
+        "tinybutstrong/opentbs": "^1.12",
         "troccoli/blade-health-icons": "^3.0"
     },
     "require-dev": {

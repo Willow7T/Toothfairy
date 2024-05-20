@@ -81,14 +81,12 @@ class User extends Authenticatable implements MustVerifyNewEmail, FilamentUser, 
     {
         //return with appointment.patient_id instead of appointments.user_id
         return $this->hasMany(Appointment::class, 'patient_id');
-    
     }
-    
+
     public function appointmentswdentist()
     {
         //return with appointment.dentist_id instead of appointments.user_id
         return $this->hasMany(Appointment::class, 'dentist_id');
-    
     }
 
     public function canAccessPanel(Panel $panel): bool
@@ -100,6 +98,9 @@ class User extends Authenticatable implements MustVerifyNewEmail, FilamentUser, 
             //all role but user must have role
             return true;
         }
-       
+    }
+    public function canAccessTreatment(): bool
+    {
+        return $this->role->name === 'admin' || $this->role->name === 'dentist';
     }
 }

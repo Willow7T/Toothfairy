@@ -27,9 +27,9 @@ class ItemResource extends Resource
 
     protected static ?string $navigationIcon = 'fluentui-toolbox-24-o';
 
-    protected static ?string $navigationGroup = 'Items';
+    //protected static ?string $navigationGroup = 'Items';
 
-    protected static ?int $navigationSort = 2;
+    //protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {

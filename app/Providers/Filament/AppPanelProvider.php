@@ -3,6 +3,8 @@
 namespace App\Providers\Filament;
 
 //use App\Filament\App\Pages\Dashboard;
+
+use App\Filament\Pages\Gallery;
 use App\Filament\Pages\Home;
 use App\Filament\Resources\TreatmentResource;
 use App\Filament\Resources\TreatmentResource\Pages\ViewTreatment;
@@ -50,6 +52,7 @@ class AppPanelProvider extends PanelProvider
             ]) 
            ->pages([
                 Home::class,
+                Gallery::class,
                 //ViewTreatment::class,
             ])
             ->discoverWidgets(in: app_path('Filament/App/Widgets'), for: 'App\\Filament\\App\\Widgets')

@@ -23,6 +23,7 @@ class Treatment extends Model
         'description',
         'price_min',
         'price_max',
+        'edufile',
     ];
 
     /**

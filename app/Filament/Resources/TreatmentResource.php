@@ -3,7 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\TreatmentResource\Pages;
-//use App\Filament\Resources\TreatmentResource\RelationManagers;
+use App\Livewire\WordRender;
 use App\Models\Treatment;
 use Dompdf\FrameDecorator\Text;
 use Filament\Forms;
@@ -12,7 +12,9 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Form;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\Fieldset as ComponentsFieldset;
+use Filament\Infolists\Components\Livewire;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\ViewEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Support\RawJs;
@@ -30,9 +32,9 @@ class TreatmentResource extends Resource
 
     protected static ?string $modelLabel = 'Treatments';
 
-    protected static ?string $navigationGroup = 'Items';
+    //  protected static ?string $navigationGroup = 'Items';
 
-    protected static ?int $navigationSort = 0;
+    //protected static ?int $navigationSort = 0;
 
 
 
@@ -69,11 +71,16 @@ class TreatmentResource extends Resource
                 FileUpload::make('edufile')
                     ->directory('EduUploads')
                     ->label('Educational File')
+                    ->columnSpanFull()
                     ->previewable(false)
+                    ->openable()
                     ->moveFiles()
+                    ->deletable()
+
+                    //only docx file types are accepted
                     ->acceptedFileTypes(['application/vnd.openxmlformats-officedocument.wordprocessingml.document'])
                     ->maxFiles(1)
-                    ->helperText('Upload a docx file for educational purposes')
+                    ->helperText('Upload a .docx file for educational purposes')
 
             ]);
     }
@@ -87,17 +94,21 @@ class TreatmentResource extends Resource
                 ColumnGroup::make('Price Range', [
                     Tables\Columns\TextColumn::make('price_min')
                         ->suffix(' kyats')
-                        ->sortable(),
+                        ->sortable()
+                        ->hidden(TreatmentResource::hiddenfrompatients()),
                     Tables\Columns\TextColumn::make('price_max')
                         ->suffix(' kyats')
-                        ->sortable(),
+                        ->sortable()
+                        ->hidden(TreatmentResource::hiddenfrompatients()),
                 ]),
                 Tables\Columns\TextColumn::make('description')
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(!(TreatmentResource::hiddenfrompatients()))
+                // ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                Tables\Filters\TrashedFilter::make(),
+                Tables\Filters\TrashedFilter::make()
+                    ->hidden(TreatmentResource::hiddenfrompatients()),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
@@ -105,14 +116,22 @@ class TreatmentResource extends Resource
                     Tables\Actions\EditAction::make()
                         ->slideOver(),
                     Tables\Actions\DeleteAction::make(),
-                ]),
+                ])
+                    ->hidden(TreatmentResource::hiddenfrompatients()),
+                Tables\Actions\ViewAction::make()->hidden(function () {
+                    // Get the current authenticated user
+                    $user = auth()->user();
+                    //Not Hide the fieldset if the user's role is 'patient'
+                    return !($user->role->name === 'patient');
+                }),
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                     Tables\Actions\ForceDeleteBulkAction::make(),
                     Tables\Actions\RestoreBulkAction::make(),
-                ]),
+                ])->hidden(TreatmentResource::hiddenfrompatients()),
             ]);
     }
 
@@ -127,7 +146,6 @@ class TreatmentResource extends Resource
     {
         return $infolist
             ->schema([
-                TextEntry::make('name'),
                 ComponentsFieldset::make('Price Range')
                     ->columnSpanFull()
                     ->schema([
@@ -138,16 +156,10 @@ class TreatmentResource extends Resource
                             ->label('Price Maximum')
                             ->suffix(' kyats'),
                     ])
-                    ->hidden(function () {
-                        // Get the current authenticated user
-                        $user = auth()->user();
-                
-                        // Hide the fieldset if the user's role is 'patient'
-                        return $user->role === 'patient';
-                    }),
-
-
-
+                    ->hidden(TreatmentResource::hiddenfrompatients()),
+                Livewire::make(WordRender::class,['edufile' => 'edufile'])
+                    ->label('Educational File')
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -167,5 +179,13 @@ class TreatmentResource extends Resource
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
+    }
+    protected static function hiddenfrompatients(): bool
+    {
+        // Get the current authenticated user
+        $user = auth()->user();
+
+        // Hide the fieldset if the user's role is 'patient'
+        return $user->role->name === 'patient';
     }
 }

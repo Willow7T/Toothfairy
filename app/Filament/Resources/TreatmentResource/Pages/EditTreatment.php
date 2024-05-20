@@ -19,4 +19,13 @@ class EditTreatment extends EditRecord
             Actions\RestoreAction::make(),
         ];
     }
+    public static function canAccess(array $parameters = []): bool
+    {
+            // Get the current authenticated user
+            $user = auth()->user();
+
+            // Hide the fieldset if the user's role is 'patient'
+            return $user->role === 'patient';
+    
+    }
 }

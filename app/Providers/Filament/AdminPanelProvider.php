@@ -32,6 +32,7 @@ use Rawilk\ProfileFilament\Filament\Clusters\Profile\Settings;
 use Awcodes\LightSwitch\LightSwitchPlugin;
 use Awcodes\LightSwitch\Enums\Alignment;
 use Filament\Navigation\MenuItem;
+use Filament\Navigation\NavigationBuilder;
 use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
 use Filament\Pages\Dashboard;
@@ -55,84 +56,102 @@ class AdminPanelProvider extends PanelProvider
                 'secondary' => Color::Gray,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
-            //->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
+            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
+            // ->resources([
+            //     Resources\DentistResource::class,
+            //     Resources\PatientsResource::class,
+            //     Resources\LabResource::class,
+            //     Resources\ItemResource::class,
+            //     Resources\TreatmentResource::class,
+            //     Resources\AppointmentResource::class,
+            //     Resources\PurchaselogResource::class,
+            // ])
             ->pages([
                 Pages\Dashboard::class,
             ])
-            ->navigationGroups([
+            // ->navigationGroups([
 
-                NavigationGroup::make()
-                    ->label('People'),
-                NavigationGroup::make()
-                    ->label('Items'),
-                NavigationGroup::make()
-                    ->label('Transactions'),
+            //     NavigationGroup::make()
+            //         ->label('People'),
+            //     NavigationGroup::make()
+            //         ->label('Items'),
+            //     NavigationGroup::make()
+            //         ->label('Transactions'),
 
-            ])
-            ->navigationItems([
+            // ])
+            ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
+                return $builder->groups([
+                    // NavigationItem::make('dashboard')
+                    // ->label(fn (): string => __('filament-panels::pages/dashboard.title'))
+                    // ->icon('heroicon-o-home')
+                    // ->url(fn (): string => Dashboard::getUrl()),
+                    NavigationGroup::make('People')
+                        ->items([
+                            // ...Resources\DentistResource::getnavigationItems(),
+                            // ...Resources\PatientsResource::getnavigationItems(),
+                            NavigationItem::make('dentist')
+                                ->label('Dentists')
+                                ->icon('healthicons-o-doctor-male')
+                                ->url(fn (): string => Resources\DentistResource::getUrl())
+                                ->sort(0),
+                            NavigationItem::make('patient')
+                                ->label('Patients')
+                                ->icon('ri-contacts-book-3-line')
+                                ->url(fn (): string => Resources\PatientsResource::getUrl())
+                                ->sort(1),
+                        ]),
+                    NavigationGroup::make('Items')
+                        ->items([
+                            NavigationItem::make('treatment')
+                                ->label('Treatments')
+                                ->url(fn (): string => Resources\TreatmentResource::getUrl())
+                                ->icon('ri-health-book-line')
+                                ->sort(0),
+                            NavigationItem::make('lab')
+                                ->label('Labs')
+                                ->url(fn (): string => Resources\LabResource::getUrl())
+                                ->icon('fluentui-dentist-16-o')
+                                ->sort(1),
+                            NavigationItem::make('item')
+                                ->label('Lab Items')
+                                ->url(fn (): string => Resources\ItemResource::getUrl())
+                                ->icon('fluentui-toolbox-24-o')
+                                ->sort(2),
+                        ]),
+                    NavigationGroup::make('Transactions')
+                        ->items([
+                            NavigationItem::make('appointment')
+                                ->label('Appointments')
+                                ->icon('vaadin-dental-chair')
+                                ->url(fn (): string => Resources\AppointmentResource::getUrl())
+                                ->sort(0),
+                            NavigationItem::make('purchaselog')
+                                ->label('Expenses')
+                                ->icon('heroicon-o-shopping-cart')
+                                ->url(fn (): string => Resources\PurchaselogResource::getUrl())
+                                ->sort(1),
+                        ]),
 
-                NavigationItem::make('dashboard')
-                    ->label(fn (): string => __('filament-panels::pages/dashboard.title'))
-                    ->icon('heroicon-o-home')
-                    ->url(fn (): string => Dashboard::getUrl()),
-
-                // NavigationItem::make('Analytics')
-                //     ->url('https://filament.pirsch.io', shouldOpenInNewTab: true)
-                //     ->icon('heroicon-o-presentation-chart-line')
-                //     ->group('Reports')
-                //     ->sort(3),
-                NavigationItem::make('dentist')
-                    ->label('Dentists')
-                    ->icon('healthicons-o-doctor-male')
-                    ->url(fn (): string => Resources\DentistResource::getUrl())
-                    ->group('People')
-                    ->sort(0),
-                NavigationItem::make('patient')
-                    ->label('Patients')
-                    ->icon('ri-contacts-book-3-line')
-                    ->url(fn (): string => Resources\PatientsResource::getUrl())
-                    ->group('People')
-                    ->sort(1),
-
-                NavigationItem::make('lab')
-                    ->label('Labs')
-                    ->url(fn (): string => Resources\LabResource::getUrl())
-                    ->group('Items')
-                    ->icon('fluentui-dentist-16-o')
-                    ->sort(1),
-                NavigationItem::make('item')
-                    ->label('Lab Items')
-                    ->url(fn (): string => Resources\ItemResource::getUrl())
-                    ->group('Items')
-                    ->icon('fluentui-toolbox-24-o')
-                    ->sort(2),
-                NavigationItem::make('treatment')
-                    ->label('Treatments')
-                    ->url(fn (): string => Resources\TreatmentResource::getUrl())
-                    ->icon('ri-health-book-line')
-                    ->group('Items')
-                    ->sort(0),
-
-                NavigationItem::make('appointment')
-                    ->label('Appointments')
-                    ->icon('vaadin-dental-chair')
-                    ->url(fn (): string => Resources\AppointmentResource::getUrl())
-                    ->group('Transactions')
-                    ->sort(0),
-                NavigationItem::make('purchaselog')
-                    ->label('Expenses')
-                    ->icon('heroicon-o-shopping-cart')
-                    ->url(fn (): string => Resources\PurchaselogResource::getUrl())
-                    ->group('Transactions')
-                    ->sort(1),
-
-
-            ])
+                        NavigationGroup::make('Page Control')
+                        ->items([
+                            NavigationItem::make('cards')
+                                ->label('Cards')
+                                ->icon('heroicon-c-window')
+                                ->url(fn (): string => Resources\CardResource::getUrl())
+                                ->sort(0),
+                            NavigationItem::make('Faqs')
+                                ->label('Faqs')
+                                ->icon('heroicon-o-question-mark-circle')
+                                ->url(fn (): string => Resources\FaqResource::getUrl())
+                                ->sort(1),
+                        ]),
+                ]);
+            })
             ->userMenuItems([
                 'Settings' => MenuItem::make()->label('Settings')
                     ->icon('heroicon-o-cog')
                     ->sort(0)
-                    ->url(fn (): string => Settings::getUrl()),
+                   ->url(fn (): string => Settings::getUrl()),
             ])
 
             //  ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
@@ -146,7 +165,7 @@ class AdminPanelProvider extends PanelProvider
 
 
             ])
-         
+
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

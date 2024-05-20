@@ -26,9 +26,9 @@ class LabResource extends Resource
 
     protected static ?string $modelLabel = 'Lab';
 
-    protected static ?string $navigationGroup = 'Items';
+    //protected static ?string $navigationGroup = 'Items';
 
-    protected static ?int $navigationSort = 1;
+    //protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {

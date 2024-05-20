@@ -10,10 +10,19 @@ class ListTreatments extends ListRecords
 {
     protected static string $resource = TreatmentResource::class;
 
+
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            //only return this if user is admin
+            Actions\CreateAction::make()
+                ->hidden(function () {
+                    // Get the current authenticated user
+                    $user = auth()->user();
+
+                    // Hide the fieldset if the user's role is 'patient'
+                    return $user->role->name === 'patient';
+                })
         ];
     }
 }

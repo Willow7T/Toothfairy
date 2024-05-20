@@ -10,9 +10,20 @@ class CreateTreatment extends CreateRecord
 {
     protected static string $resource = TreatmentResource::class;
 
+    public static function canAccess(array $parameters = []): bool
+    {
+        $user = auth()->user();
+       // dd($user->role->name);  
+
+        // Hide the fieldset if the user's role is 'patient'
+        return !($user->role->name === 'patient');    
+    }
+   
 
     protected function getRedirectUrl(): string
     {
         return $this->previousUrl ?? $this->getResource()::getUrl('index');
     }
+
+
 }
