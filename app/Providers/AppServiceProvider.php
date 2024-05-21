@@ -38,7 +38,7 @@ class AppServiceProvider extends ServiceProvider
         PurchaselogItem::observe(PurchaselogObserver::class);
         Treatment::observe(TreatmentObserver::class);
         FilamentAsset::register([
-            Css::make('customapp', __DIR__ . '/../../public/build/assets/app.css')->loadedOnRequest(),
+            Css::make('final_2.0', __DIR__ . '/../../public/build/assets/app.css')->loadedOnRequest(),
         ]);
     }
 }

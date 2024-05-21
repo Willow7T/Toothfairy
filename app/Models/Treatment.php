@@ -21,9 +21,11 @@ class Treatment extends Model
     protected $fillable = [
         'name',
         'description',
+        'is_register',
         'price_min',
         'price_max',
         'edufile',
+        'image',
     ];
 
     /**
@@ -34,10 +36,4 @@ class Treatment extends Model
     protected $casts = [
         'id' => 'integer',
     ];
-
-    // // belogns to appointment table with appointment_treatment table as pivot
-    // public function appointments(): BelongsToMany
-    // {
-    //     return $this->belongsToMany(Appointment::class, 'appointment_treatment')->withPivot('price');
-    // }
 }

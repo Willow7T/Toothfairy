@@ -66,8 +66,11 @@ class PatientsResource extends Resource
                             ->prefixIcon('iconpark-birthdaycake-o')
                             ->after('1900-01-01')
                             ->before('today')
+                            ->maxDate(now()->subYear(2))
+                            ->default(now()->subYear(2))
                             ->native(false)
-                            ->live()
+                            ->live(onBlur:true)
+                            ->hint('This field is automatically calculated based on the age field.')
                             ->afterStateUpdated(function (Set $set, Get $get) {
                                 $birthday = $get('birthday');
                                 $age = Carbon::parse($birthday)->age;
@@ -75,8 +78,9 @@ class PatientsResource extends Resource
                             }),
                         TextInput::make('age')
                             ->label('Age')
-                            ->live()
+                            ->live(onBlur:true)
                             ->suffix('years')
+                            ->default(2)
                             ->numeric()
                             ->prefixIcon('iconpark-birthdaycake-o')
                             ->afterStateUpdated(function (Set $set, Get $get) {

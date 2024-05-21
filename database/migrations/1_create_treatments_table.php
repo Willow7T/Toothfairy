@@ -20,8 +20,12 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->decimal('price_min', 12, 2)->nullable();
             $table->decimal('price_max', 12, 2)->nullable();
+            //is_register
+            $table->boolean('is_register')->default(false);
             //for docx file
             $table->text('edufile')->nullable();
+            //for home page radoms
+            $table->string('image')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

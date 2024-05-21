@@ -54,7 +54,7 @@ class AppointmentResource extends Resource
                             ->label('Patient')
                             //user role must be 3 (patient) relation
                             ->relationship('patient', 'name')
-                            ->options(User::where('role_id', 3)->get()->pluck('name', 'id'))
+                            ->options( User::where('role_id', 3)->get()->pluck('name', 'id'))
                             ->searchable()
                             ->required()
                             ->loadingMessage('Loading patients...'),
@@ -195,64 +195,64 @@ class AppointmentResource extends Resource
         // });
         return $table
             ->columns([
-                    TextColumn::make('appointment_date')
-                        ->date()
-                        ->label('Appointment Date'),
-                    TextColumn::make('dentist.name'),
+                TextColumn::make('appointment_date')
+                    ->date()
+                    ->label('Appointment Date'),
+                TextColumn::make('dentist.name'),
 
-                        TextColumn::make('patient.name'),
-                        TextColumn::make('patient.userbio.age')
-                            ->label('Age')
-                            ->suffix(' years'),
+                TextColumn::make('patient.name'),
+                TextColumn::make('patient.userbio.age')
+                    ->label('Age')
+                    ->suffix(' years'),
 
-                        TextColumn::make('calculated_fee')
-                            ->label('Without Discount')
-                            ->suffix(' kyats')->toggleable(isToggledHiddenByDefault: true),
-                        TextColumn::make('discount')
-                            ->label('Discount')
-                            ->suffix(' kyats')->toggleable(isToggledHiddenByDefault: true),
-                        TextColumn::make('discount_percentage')
-                            ->label('Discount Percentage')
-                            ->numeric()
-                            //remove decimal
-                            ->suffix('%')->toggleable(isToggledHiddenByDefault: true),
-                        TextColumn::make('total_fee')
-                            ->label('Total Cost')
-                            ->suffix(' kyats')->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('calculated_fee')
+                    ->label('Without Discount')
+                    ->suffix(' kyats')->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('discount')
+                    ->label('Discount')
+                    ->suffix(' kyats')->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('discount_percentage')
+                    ->label('Discount Percentage')
+                    ->numeric()
+                    //remove decimal
+                    ->suffix('%')->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('total_fee')
+                    ->label('Total Cost')
+                    ->suffix(' kyats')->toggleable(isToggledHiddenByDefault: true),
 
-                        TextColumn::make('treatments.treatment.name')
-                            ->label('Treatment')
-                            ->listWithLineBreaks()
-                            ->bulleted()->toggleable(isToggledHiddenByDefault: true),
-                        TextColumn::make('treatments.quantity')
-                            ->label('Quantity')
-                            ->listWithLineBreaks()
-                            ->bulleted()->toggleable(isToggledHiddenByDefault: true),
-                        TextColumn::make('treatments.price')
-                            ->label('Price')
-                            ->listWithLineBreaks()
-                            ->bulleted()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('treatments.treatment.name')
+                    ->label('Treatment')
+                    ->listWithLineBreaks()
+                    ->bulleted()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('treatments.quantity')
+                    ->label('Quantity')
+                    ->listWithLineBreaks()
+                    ->bulleted()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('treatments.price')
+                    ->label('Price')
+                    ->listWithLineBreaks()
+                    ->bulleted()->toggleable(isToggledHiddenByDefault: true),
 
-                        SelectColumn::make('status')
-                            ->label('Status')
-                            ->options([
-                                'pending' => 'Pending',
-                                'completed' => 'Completed',
-                                'cancelled' => 'Cancelled',
-                            ])->toggleable(),
+                SelectColumn::make('status')
+                    ->label('Status')
+                    ->options([
+                        'pending' => 'Pending',
+                        'completed' => 'Completed',
+                        'cancelled' => 'Cancelled',
+                    ])->toggleable(),
 
-                        TextColumn::make('discription')
-                            ->label('Remarks')
-                            ->toggleable(isToggledHiddenByDefault: true),
-                        TextColumn::make('created_at')
-                            ->label('Created At')
-                            ->since()
-                            ->sortable()
-                            ->toggleable(isToggledHiddenByDefault: true),
-                        TextColumn::make('updated_at')
-                            ->label('Updated At')
-                            ->since()
-                            ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('discription')
+                    ->label('Remarks')
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('created_at')
+                    ->label('Created At')
+                    ->since()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('updated_at')
+                    ->label('Updated At')
+                    ->since()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
             ])
 

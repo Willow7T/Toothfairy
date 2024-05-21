@@ -6,8 +6,6 @@ use Filament\Pages\Page;
 
 class Gallery extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
-
     //change title
     protected static ?string $title = 'Gallery';
 

@@ -9,8 +9,10 @@ use Dompdf\FrameDecorator\Text;
 use Filament\Forms;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Infolists\Components\Fieldset as ComponentsFieldset;
 use Filament\Infolists\Components\Livewire;
 use Filament\Infolists\Components\TextEntry;
@@ -49,6 +51,11 @@ class TreatmentResource extends Resource
                 Forms\Components\Textarea::make('description')
                     ->rows(1)
                     ->autosize(),
+                Toggle::make('is_register')
+                    ->hint('Register this treatment to allow patient to choose during thier booking process')
+                    ->default(false)
+                    ->required(),
+
 
                 Fieldset::make('Price Range')
                     ->columns(2)
@@ -80,8 +87,15 @@ class TreatmentResource extends Resource
                     //only docx file types are accepted
                     ->acceptedFileTypes(['application/vnd.openxmlformats-officedocument.wordprocessingml.document'])
                     ->maxFiles(1)
-                    ->helperText('Upload a .docx file for educational purposes')
-
+                    ->helperText('Upload a .docx file for educational purposes'),
+                FileUpload::make('image')
+                    ->image()
+                    ->directory('Treatments')
+                    ->required()
+                    ->imageEditor()
+                    ->downloadable()
+                    ->maxSize(30000)
+                    ->previewable(),
             ]);
     }
 
@@ -157,7 +171,7 @@ class TreatmentResource extends Resource
                             ->suffix(' kyats'),
                     ])
                     ->hidden(TreatmentResource::hiddenfrompatients()),
-                Livewire::make(WordRender::class,['edufile' => 'edufile'])
+                Livewire::make(WordRender::class, ['edufile' => 'edufile'])
                     ->label('Educational File')
                     ->columnSpanFull(),
             ]);

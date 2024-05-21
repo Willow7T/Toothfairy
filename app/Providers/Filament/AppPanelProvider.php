@@ -4,10 +4,12 @@ namespace App\Providers\Filament;
 
 //use App\Filament\App\Pages\Dashboard;
 
+use App\Filament\App\Resources\AppointmentResource;
+use App\Filament\Pages\AboutUs;
+use App\Filament\Pages\FAQs;
 use App\Filament\Pages\Gallery;
 use App\Filament\Pages\Home;
 use App\Filament\Resources\TreatmentResource;
-use App\Filament\Resources\TreatmentResource\Pages\ViewTreatment;
 use App\Http\Middleware\StoreSessionData;
 use Awcodes\LightSwitch\LightSwitchPlugin;
 use Awcodes\LightSwitch\Enums\Alignment;
@@ -15,11 +17,11 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Pages;
+use Filament\Navigation\NavigationBuilder;
+use Filament\Navigation\NavigationItem;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Widgets;
 use Hasnayeen\Themes\Http\Middleware\SetTheme;
 use Hasnayeen\Themes\ThemesPlugin;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -46,13 +48,17 @@ class AppPanelProvider extends PanelProvider
                 'primary' => Color::Amber,
             ])
             //->discoverResources(in: app_path('Filament/App/Resources'), for: 'App\\Filament\\App\\Resources')
-           // ->discoverPages(in: app_path('Filament/App/Pages'), for: 'App\\Filament\\App\\Pages')
-           ->resources([
+            // ->discoverPages(in: app_path('Filament/App/Pages'), for: 'App\\Filament\\App\\Pages')
+            ->resources([
+                AppointmentResource::class,
+
                 TreatmentResource::class,
-            ]) 
-           ->pages([
+            ])
+            ->pages([
                 Home::class,
                 Gallery::class,
+                FAQs::class,
+                AboutUs::class,
                 //ViewTreatment::class,
             ])
             ->discoverWidgets(in: app_path('Filament/App/Widgets'), for: 'App\\Filament\\App\\Widgets')
@@ -73,9 +79,40 @@ class AppPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
+            ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
+                return $builder->items([
+                    NavigationItem::make('Home')
+                        ->icon('heroicon-o-home')
+                        ->url(fn (): string => Home::getUrl())
+                        ->sort(0),
+
+                    NavigationItem::make('Treatment')
+                        ->icon('ri-health-book-line')
+                        ->url(fn (): string => TreatmentResource::getUrl())
+                        ->sort(1),
+                    NavigationItem::make('Gallery')
+                        ->icon('vaadin-picture')
+                        ->url(fn (): string => Gallery::getUrl())
+                        ->sort(2),
+                    NavigationItem::make('FAQs')
+                        ->icon('heroicon-o-question-mark-circle')
+                        ->url(fn (): string => FAQs::getUrl())
+                        ->sort(3),
+                    NavigationItem::make('Appointment')
+                        ->icon('heroicon-o-book-open')
+                        ->url(fn (): string => AppointmentResource::getUrl())
+                        ->sort(4),
+                    NavigationItem::make('About Us')
+                        ->icon('heroicon-o-exclamation-circle')
+                        ->url(fn (): string => AboutUs::getUrl())
+                        ->sort(5),
+
+
+                ]);
+            })
             // ->sidebarWidth('16rem')
             ->maxContentWidth('7xl')
-                //->sidebarFullyCollapsibleOnDesktop()
+            //->sidebarFullyCollapsibleOnDesktop()
             ->topNavigation()
             ->breadcrumbs()
             ->plugins(

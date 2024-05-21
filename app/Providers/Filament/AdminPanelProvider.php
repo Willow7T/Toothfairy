@@ -49,7 +49,6 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            //->registration()
             ->unsavedChangesAlerts(0)
             ->colors([
                 'primary' => Color::Indigo,
@@ -57,38 +56,15 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
-            // ->resources([
-            //     Resources\DentistResource::class,
-            //     Resources\PatientsResource::class,
-            //     Resources\LabResource::class,
-            //     Resources\ItemResource::class,
-            //     Resources\TreatmentResource::class,
-            //     Resources\AppointmentResource::class,
-            //     Resources\PurchaselogResource::class,
-            // ])
             ->pages([
                 Pages\Dashboard::class,
             ])
-            // ->navigationGroups([
-
-            //     NavigationGroup::make()
-            //         ->label('People'),
-            //     NavigationGroup::make()
-            //         ->label('Items'),
-            //     NavigationGroup::make()
-            //         ->label('Transactions'),
-
-            // ])
+       
             ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
                 return $builder->groups([
-                    // NavigationItem::make('dashboard')
-                    // ->label(fn (): string => __('filament-panels::pages/dashboard.title'))
-                    // ->icon('heroicon-o-home')
-                    // ->url(fn (): string => Dashboard::getUrl()),
+            
                     NavigationGroup::make('People')
                         ->items([
-                            // ...Resources\DentistResource::getnavigationItems(),
-                            // ...Resources\PatientsResource::getnavigationItems(),
                             NavigationItem::make('dentist')
                                 ->label('Dentists')
                                 ->icon('healthicons-o-doctor-male')
@@ -134,16 +110,26 @@ class AdminPanelProvider extends PanelProvider
 
                         NavigationGroup::make('Page Control')
                         ->items([
+                        NavigationItem::make('home')
+                                ->label('Home')
+                                ->icon('heroicon-o-home')
+                                ->url(fn (): string => Resources\HomeassetResource::getUrl())
+                                ->sort(0),
                             NavigationItem::make('cards')
                                 ->label('Cards')
                                 ->icon('heroicon-c-window')
                                 ->url(fn (): string => Resources\CardResource::getUrl())
-                                ->sort(0),
+                                ->sort(1),
                             NavigationItem::make('Faqs')
                                 ->label('Faqs')
                                 ->icon('heroicon-o-question-mark-circle')
                                 ->url(fn (): string => Resources\FaqResource::getUrl())
-                                ->sort(1),
+                                ->sort(2),
+                                NavigationItem::make('About Us')
+                                ->label('Cards')
+                                ->icon('heroicon-o-exclamation-circle')
+                                ->url(fn (): string => Resources\AboutResource::getUrl())
+                                ->sort(3),
                         ]),
                 ]);
             })
@@ -162,8 +148,6 @@ class AdminPanelProvider extends PanelProvider
                 SummaryChart::class,
                 IncomeChart::class,
                 ExpenseChart::class,
-
-
             ])
 
             ->middleware([

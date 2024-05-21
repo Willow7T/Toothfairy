@@ -17,7 +17,7 @@ class CardResource extends Resource
 {
     protected static ?string $model = Card::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    //protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $modelLabel = 'Cards';
 
@@ -36,11 +36,12 @@ class CardResource extends Resource
 
                 Forms\Components\FileUpload::make('image')
                     ->image()
+                    ->directory('Cards')
                     ->required()
                     ->imageEditor()
                     ->downloadable()
                     ->columnSpanFull()
-                    ->maxSize('20000')
+                   // ->maxSize('20000')
                     ->previewable(),
                 Forms\Components\TextInput::make('sort_order')
                     ->required()
