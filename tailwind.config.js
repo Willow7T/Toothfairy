@@ -2,7 +2,8 @@
 export default {
   darkMode: 'selector',
   content: [
-    // "./resources/**/welcome.blade.php",
+    // "./resources/views/livewire/welcome.blade.php",
+    // "./resources/views/welcome.blade.php"
     "./resources/**/*.blade.php",
     "./resources/**/*.js",
     "./resources/**/*.vue",
@@ -19,4 +20,4 @@ export default {
   },
   plugins: [],
 }
-// Poetsen One "Fira Code", monospace
+// Poetsen One "Fira Code", monospaceresources/views/livewire/welcome.blade.php

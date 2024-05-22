@@ -40,8 +40,8 @@
 }
 
 .content_database blockquote {
-    width: 20% ;
-    padding: 1rem;
+    max-width: 90% ;
+    padding: .2rem;
     /* 16px */
     --tw-bg-opacity: 1;
     color: rgba(var(--primary-50), var(--tw-text-opacity));
@@ -53,12 +53,12 @@
 
 .content_database {
     width: 20rem;
-    height: 20rem;
+    height: 30rem;
     padding: 1rem;
 }
 .social_database {
     width: 20rem;
-    height: 20rem;
+    height: 30rem;
     padding: 1rem;
 }
 .Img_database {
@@ -91,4 +91,10 @@
         height: 40rem;
     }
 }
+
+
+
+
+
+
 

@@ -39,6 +39,7 @@ class AppPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
+        // dd(Gallery::getRouteName());
         return $panel
             ->id('app')
             ->path('')
@@ -84,27 +85,33 @@ class AppPanelProvider extends PanelProvider
                     NavigationItem::make('Home')
                         ->icon('heroicon-o-home')
                         ->url(fn (): string => Home::getUrl())
+                        ->isActiveWhen(fn (): bool => request()->routeIs(Home::getRouteName()))
                         ->sort(0),
 
                     NavigationItem::make('Treatment')
                         ->icon('ri-health-book-line')
                         ->url(fn (): string => TreatmentResource::getUrl())
+                        ->isActiveWhen(fn (): bool => request()->routeIs('filament.app.resources.' . TreatmentResource::getRoutePrefix(). '.*'))
                         ->sort(1),
                     NavigationItem::make('Gallery')
                         ->icon('vaadin-picture')
                         ->url(fn (): string => Gallery::getUrl())
+                        ->isActiveWhen(fn (): bool => request()->routeIs(Gallery::getRouteName()))
                         ->sort(2),
                     NavigationItem::make('FAQs')
                         ->icon('heroicon-o-question-mark-circle')
                         ->url(fn (): string => FAQs::getUrl())
+                        ->isActiveWhen(fn (): bool => request()->routeIs(FAQs::getRouteName()))
                         ->sort(3),
                     NavigationItem::make('Appointment')
                         ->icon('heroicon-o-book-open')
                         ->url(fn (): string => AppointmentResource::getUrl())
+                        ->isActiveWhen(fn (): bool => request()->routeIs('filament.app.resources.' . AppointmentResource::getRoutePrefix() . '.*'))
                         ->sort(4),
                     NavigationItem::make('About Us')
                         ->icon('heroicon-o-exclamation-circle')
                         ->url(fn (): string => AboutUs::getUrl())
+                        ->isActiveWhen(fn (): bool => request()->routeIs(AboutUs::getRouteName()))
                         ->sort(5),
 
 

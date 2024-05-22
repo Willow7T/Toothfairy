@@ -18,6 +18,8 @@ class HomeassetResource extends Resource
 {
     protected static ?string $model = Homeasset::class;
 
+    protected static ?string $pluralModelLabel = 'Home & Welcome Control';
+
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
@@ -29,40 +31,44 @@ class HomeassetResource extends Resource
                     ->columnSpanFull()
                     ->maxLength(25),
 
-                    Forms\Components\Fieldset::make('Image')
+                Forms\Components\Fieldset::make('Image')
                     ->label('Images')
                     ->schema([
                         Forms\Components\FileUpload::make('image')
-                        ->image()
-                        ->directory('Home')
-                        ->required()
-                        ->imageEditor()
-                        ->downloadable()
-                        ->maxSize(30000)
-                        ->previewable(),
-                    Forms\Components\FileUpload::make('image2')
-                        ->image()
-                        ->directory('Home')
-                        ->required()
-                        ->imageEditor()
-                        ->downloadable()
-                        ->maxSize(30000)
-                        ->previewable(),
+                            ->label('Big Image')
+                            ->image()
+                            ->directory('Home')
+                            ->required()
+                            ->imageEditor()
+                            ->downloadable()
+                            ->maxSize(30000)
+                            ->hint('This will be the wallpaper in the home page card.')
+                            ->previewable(),
+                        Forms\Components\FileUpload::make('image2')
+                            ->label('Small Image')
+                            ->image()
+                            ->directory('Home')
+                            ->required()
+                            ->imageEditor()
+                            ->downloadable()
+                            ->maxSize(30000)
+                            ->hint('This will be the logo in the home page card.')
+                            ->previewable(),
                     ]),
-                    Forms\Components\Fieldset::make('Text')
+                Forms\Components\Fieldset::make('Text')
                     ->label('Text')
                     ->schema([
                         Forms\Components\TextInput::make('h1')
-                        ->maxLength(25)
-                        ->required(),
-                    Forms\Components\TextInput::make('h2')
-                        ->maxLength(50)
-                        ->required(),
-                    Forms\Components\TextInput::make('p')
-                        ->maxLength(30)
-                        ->required(),
+                            ->maxLength(25)
+                            ->required(),
+                        Forms\Components\TextInput::make('h2')
+                            ->maxLength(50)
+                            ->required(),
+                        Forms\Components\TextInput::make('p')
+                            ->maxLength(30)
+                            ->required(),
                     ]),
-               
+
                 Forms\Components\Toggle::make('is_active')
                     ->inline(false)
                     ->hint('Whether these Home Assets are active or not. It there are multiple active it will randomly take one set.')
@@ -97,7 +103,7 @@ class HomeassetResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
-                ->slideOver(),
+                    ->slideOver(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

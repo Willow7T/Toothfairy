@@ -42,6 +42,7 @@ use Hasnayeen\Themes\Http\Middleware\SetTheme;
 
 class AdminPanelProvider extends PanelProvider
 {
+
     public function panel(Panel $panel): Panel
     {
         return $panel
@@ -59,88 +60,110 @@ class AdminPanelProvider extends PanelProvider
             ->pages([
                 Pages\Dashboard::class,
             ])
-       
+
             ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
-                return $builder->groups([
-            
-                    NavigationGroup::make('People')
-                        ->items([
-                            NavigationItem::make('dentist')
-                                ->label('Dentists')
-                                ->icon('healthicons-o-doctor-male')
-                                ->url(fn (): string => Resources\DentistResource::getUrl())
-                                ->sort(0),
-                            NavigationItem::make('patient')
-                                ->label('Patients')
-                                ->icon('ri-contacts-book-3-line')
-                                ->url(fn (): string => Resources\PatientsResource::getUrl())
-                                ->sort(1),
-                        ]),
-                    NavigationGroup::make('Items')
-                        ->items([
-                            NavigationItem::make('treatment')
-                                ->label('Treatments')
-                                ->url(fn (): string => Resources\TreatmentResource::getUrl())
-                                ->icon('ri-health-book-line')
-                                ->sort(0),
-                            NavigationItem::make('lab')
-                                ->label('Labs')
-                                ->url(fn (): string => Resources\LabResource::getUrl())
-                                ->icon('fluentui-dentist-16-o')
-                                ->sort(1),
-                            NavigationItem::make('item')
-                                ->label('Lab Items')
-                                ->url(fn (): string => Resources\ItemResource::getUrl())
-                                ->icon('fluentui-toolbox-24-o')
-                                ->sort(2),
-                        ]),
-                    NavigationGroup::make('Transactions')
-                        ->items([
-                            NavigationItem::make('appointment')
-                                ->label('Appointments')
-                                ->icon('vaadin-dental-chair')
-                                ->url(fn (): string => Resources\AppointmentResource::getUrl())
-                                ->sort(0),
-                            NavigationItem::make('purchaselog')
-                                ->label('Expenses')
-                                ->icon('heroicon-o-shopping-cart')
-                                ->url(fn (): string => Resources\PurchaselogResource::getUrl())
-                                ->sort(1),
-                        ]),
+                return $builder
+
+                    ->items([
+                        //navigation for dashboard
+
+                        NavigationItem::make('dashboard')
+                            ->label('Dashboard')
+                            ->icon('heroicon-o-home')
+                            ->url(fn (): string => Pages\Dashboard::getUrl())
+                            ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.pages.dashboard'))
+                            ->sort(0),
+                    ])
+
+                    ->groups([
+
+                        NavigationGroup::make('People')
+                            ->items([
+                                NavigationItem::make('dentist')
+                                    ->label('Dentists')
+                                    ->icon('healthicons-o-doctor-male')
+                                    ->url(fn (): string => Resources\DentistResource::getUrl())
+                                    ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.resources.' . Resources\DentistResource::getRoutePrefix() . '.*'))->sort(0),
+                                NavigationItem::make('patient')
+                                    ->label('Patients')
+                                    ->icon('ri-contacts-book-3-line')
+                                    ->url(fn (): string => Resources\PatientsResource::getUrl())
+                                    ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.resources.' . Resources\PatientsResource::getRoutePrefix() . '.*'))->sort(1),
+                            ]),
+                        NavigationGroup::make('Items')
+                            ->items([
+                                NavigationItem::make('treatment')
+                                    ->label('Treatments')
+                                    ->url(fn (): string => Resources\TreatmentResource::getUrl())
+                                    ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.resources.' . Resources\TreatmentResource::getRoutePrefix() . '.*'))
+                                    ->icon('ri-health-book-line')
+                                    ->sort(0),
+                                NavigationItem::make('lab')
+                                    ->label('Labs')
+                                    ->url(fn (): string => Resources\LabResource::getUrl())
+                                    ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.resources.' . Resources\LabResource::getRoutePrefix() . '.*'))
+                                    ->icon('fluentui-dentist-16-o')
+                                    ->sort(1),
+                                NavigationItem::make('item')
+                                    ->label('Lab Items')
+                                    ->url(fn (): string => Resources\ItemResource::getUrl())
+                                    ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.resources.' . Resources\ItemResource::getRoutePrefix() . '.*'))
+                                    ->icon('fluentui-toolbox-24-o')
+                                    ->sort(2),
+                            ]),
+                        NavigationGroup::make('Transactions')
+                            ->items([
+                                NavigationItem::make('appointment')
+                                    ->label('Appointments')
+                                    ->icon('vaadin-dental-chair')
+                                    ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.resources.' . Resources\AppointmentResource::getRoutePrefix() . '.*'))
+                                    ->url(fn (): string => Resources\AppointmentResource::getUrl())
+                                    ->sort(0),
+                                NavigationItem::make('purchaselog')
+                                    ->label('Expenses')
+                                    ->icon('heroicon-o-shopping-cart')
+                                    ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.resources.' . Resources\PurchaselogResource::getRoutePrefix() . '.*'))
+                                    ->url(fn (): string => Resources\PurchaselogResource::getUrl())
+                                    ->sort(1),
+                            ]),
 
                         NavigationGroup::make('Page Control')
-                        ->items([
-                        NavigationItem::make('home')
-                                ->label('Home')
-                                ->icon('heroicon-o-home')
-                                ->url(fn (): string => Resources\HomeassetResource::getUrl())
-                                ->sort(0),
-                            NavigationItem::make('cards')
-                                ->label('Cards')
-                                ->icon('heroicon-c-window')
-                                ->url(fn (): string => Resources\CardResource::getUrl())
-                                ->sort(1),
-                            NavigationItem::make('Faqs')
-                                ->label('Faqs')
-                                ->icon('heroicon-o-question-mark-circle')
-                                ->url(fn (): string => Resources\FaqResource::getUrl())
-                                ->sort(2),
+                            ->items([
+                                NavigationItem::make('home')
+                                    ->label('Home')
+                                    ->icon('heroicon-o-home')
+                                    ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.resources.' . Resources\HomeassetResource::getRoutePrefix() . '.*'))
+                                    ->url(fn (): string => Resources\HomeassetResource::getUrl())
+                                    ->sort(0),
+                                NavigationItem::make('cards')
+                                    ->label('Cards')
+                                    ->icon('heroicon-c-window')
+                                    ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.resources.' . Resources\CardResource::getRoutePrefix() . '.*'))
+                                    ->url(fn (): string => Resources\CardResource::getUrl())
+                                    ->sort(1),
+                                NavigationItem::make('Faqs')
+                                    ->label('Faqs')
+                                    ->icon('heroicon-o-question-mark-circle')
+                                    ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.resources.' . Resources\FaqResource::getRoutePrefix() . '.*'))
+                                    ->url(fn (): string => Resources\FaqResource::getUrl())
+                                    ->sort(2),
                                 NavigationItem::make('About Us')
-                                ->label('Cards')
-                                ->icon('heroicon-o-exclamation-circle')
-                                ->url(fn (): string => Resources\AboutResource::getUrl())
-                                ->sort(3),
-                        ]),
-                ]);
+                                    ->label('About Us')
+                                    ->icon('heroicon-o-exclamation-circle')
+                                    ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.resources.' . Resources\AboutResource::getRoutePrefix() . '.*'))
+                                    ->url(fn (): string => Resources\AboutResource::getUrl())
+                                    ->sort(3),
+                            ]),
+                    ]);
             })
             ->userMenuItems([
                 'Settings' => MenuItem::make()->label('Settings')
                     ->icon('heroicon-o-cog')
                     ->sort(0)
-                   ->url(fn (): string => Settings::getUrl()),
+                    ->url(fn (): string => Settings::getUrl()),
             ])
 
-            //  ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
+           // ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 //Widgets\AccountWidget::class,
                 // Widgets\FilamentInfoWidget::class,

@@ -15,15 +15,13 @@
             </div>
         </div>
         <div class="w-16 h-16 md:h-64 md:w-64 absolute right-0 md:right-24 overflow-hidden z-0">
-            {{-- style="width: 16rem;" --}}
-            <img src="{{ optional($homeasset)->image ?? 'uploads/landing4.png' }}" alt="landing picture"
+            <img src="{{ optional($homeasset)->image2 ?? 'Home/small.png' }}" alt="landing logo"
                 style="width: 100%; height: 100%; object-fit: cover; object-position:top">
         </div>
         <div class="absoulute left-0 overflow-hidden h-64">
-            <img src="{{ optional($homeasset)->image2 ?? 'uploads/landing5.png' }}" alt="landing picture"
+            <img src="{{ optional($homeasset)->image ?? 'Home/big.png' }}" alt="landing picture"
                 style="width: 100%; height: 100%; object-fit: cover; object-position:top">
         </div>
     </div>
 
 </div>
-

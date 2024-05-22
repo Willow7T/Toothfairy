@@ -1,6 +1,6 @@
     <div 
     x-data="{}" 
-    x-load-css="[@js(\Filament\Support\Facades\FilamentAsset::getStyleHref('final_2.0'))]"
+    x-load-css="[@js(\Filament\Support\Facades\FilamentAsset::getStyleHref('final_2.2'))]"
     > 
         <div>
             <livewire:Cards />

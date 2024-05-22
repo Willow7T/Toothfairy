@@ -1,7 +1,7 @@
 {{-- <x-filament-panels::page> --}}
 <div 
     x-data="{}"
-    x-load-css="[@js(\Filament\Support\Facades\FilamentAsset::getStyleHref('final_2.0'))]"
+    x-load-css="[@js(\Filament\Support\Facades\FilamentAsset::getStyleHref('final_2.2'))]"
 class="mt-6">
     <div>
         <livewire:CardHome />
@@ -21,6 +21,3 @@ class="mt-6">
         </div>
     </div>
 </div>
-{{-- </x-filament-panels::page> --}}
-{{-- x-data="{}"
-x-load-css="[@js(\Filament\Support\Facades\FilamentAsset::getStyleHref('customapp'))]" --}}
