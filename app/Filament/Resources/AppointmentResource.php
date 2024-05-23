@@ -71,9 +71,9 @@ class AppointmentResource extends Resource
                             ->hint(new HtmlString('
                             <p>Search with name and age. To search with age use<span class="text-primary-400">" +"</span>before the typing the age.</p>
                             <p>Example: type <span>"William +25"</span> to search 25 years old William.</p>
-                            <p>Keys: <kbd class="min-h-[30px] inline-flex justify-center items-center py-1 px-1.5 bg-white border border-gray-200 font-mono text-sm text-gray-800 rounded-md shadow-[0px_2px_0px_0px_rgba(0,0,0,0.08)] dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-200 dark:shadow-[0px_2px_0px_0px_rgba(255,255,255,0.1)]"
+                            <p>Keys: <kbd class="min-h-[30px] inline-flex justify-center items-center py-1 px-1.5 bg-white border border-gray-200 font-fira text-sm text-primary-500 rounded-md shadow-[0px_2px_0px_0px_rgba(0,0,0,0.08)]"
                             >space</kbd><span class="text-primary-400"> + </span>
-                            <kbd class="min-h-[30px] inline-flex justify-center items-center py-1 px-1.5 bg-white border border-gray-200 font-mono text-sm text-gray-800 rounded-md shadow-[0px_2px_0px_0px_rgba(0,0,0,0.08)] dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-200 dark:shadow-[0px_2px_0px_0px_rgba(255,255,255,0.1)]"
+                            <kbd class="min-h-[30px] inline-flex justify-center items-center py-1 px-1.5 bg-white border border-gray-200 font-fira text-sm text-primary-500 rounded-md shadow-[0px_2px_0px_0px_rgba(0,0,0,0.08)]"
                             >+</kbd>
                             </p>
                             '))  
