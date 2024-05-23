@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('homeassets', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->boolean('active')->default(0);
+            $table->boolean('is_active')->default(0);
             $table->string('image')->nullable();
             $table->string('image2')->nullable();
             $table->string('h1')->nullable();

@@ -32,6 +32,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\HtmlString;
 use Termwind\Components\Raw;
 
 
@@ -54,18 +55,39 @@ class AppointmentResource extends Resource
                             ->label('Patient')
                             //user role must be 3 (patient) relation
                             ->relationship('patient', 'name')
-                            ->options( User::where('role_id', 3)->get()->pluck('name', 'id'))
                             ->searchable()
+                            ->columnSpanFull()
+                            ->options(
+                                User::orderBy('updated_at', 'desc')
+                                    ->where('role_id', 3)->get()
+                                    ->mapWithKeys(function ($patient) {
+                                        $age = $patient->userBio->age ?? 'N/A';
+                                        return [$patient->id => "{$patient->name} (Age: {$age})"];
+                                    })
+                            )
+                            ->getSearchResultsUsing(fn (string $search): array =>
+                                User::searchPatients($search)->toArray())
                             ->required()
+                            ->hint(new HtmlString('
+                            <p>Search with name and age. To search with age use<span class="text-primary-400">" +"</span>before the typing the age.</p>
+                            <p>Example: type <span>"William +25"</span> to search 25 years old William.</p>
+                            <p>Keys: <kbd class="min-h-[30px] inline-flex justify-center items-center py-1 px-1.5 bg-white border border-gray-200 font-mono text-sm text-gray-800 rounded-md shadow-[0px_2px_0px_0px_rgba(0,0,0,0.08)] dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-200 dark:shadow-[0px_2px_0px_0px_rgba(255,255,255,0.1)]"
+                            >space</kbd><span class="text-primary-400"> + </span>
+                            <kbd class="min-h-[30px] inline-flex justify-center items-center py-1 px-1.5 bg-white border border-gray-200 font-mono text-sm text-gray-800 rounded-md shadow-[0px_2px_0px_0px_rgba(0,0,0,0.08)] dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-200 dark:shadow-[0px_2px_0px_0px_rgba(255,255,255,0.1)]"
+                            >+</kbd>
+                            </p>
+                            '))  
                             ->loadingMessage('Loading patients...'),
                         Select::make('dentist_id')
                             ->label('Dentist')
+                            ->columnSpanFull()
                             //user role must be 2 (dentist) relation
                             ->relationship('dentist', 'name')
                             //only role 2
                             ->options(User::where('role_id', 2)->get()->pluck('name', 'id'))
                             ->searchable()
                             ->required()
+                            // ->extraAttributes([])
                             ->loadingMessage('Loading dentists...'),
                         DatePicker::make('appointment_date')
                             ->label('Appointment Date')
@@ -163,7 +185,6 @@ class AppointmentResource extends Resource
                             ->suffix('kyats')
                             ->prefixIcon('heroicon-o-currency-dollar')
                             ->required(),
-
                         TextInput::make('discount_percentage')
                             ->label('Discount Percentage')
                             ->numeric()->mask(RawJs::make('$money($input)'))
@@ -176,7 +197,6 @@ class AppointmentResource extends Resource
                             ->required(),
 
                     ]),
-
                 Textarea::make('description')
                     ->placeholder('Remarks')
                     ->label('Descritpion')

@@ -20,7 +20,7 @@ use App\Observers\HomeObserver;
 use App\Observers\PurchaselogObserver;
 use App\Observers\TreatmentObserver;
 use Filament\Support\Facades\FilamentAsset;
-
+use Illuminate\Support\Facades\Blade;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -47,6 +47,12 @@ class AppServiceProvider extends ServiceProvider
         Homeasset::observe(HomeObserver::class);
         PurchaselogItem::observe(PurchaselogObserver::class);
         Treatment::observe(TreatmentObserver::class);
+        Blade::directive('safeSvg', function ($expression) {
+            return "<?php try { echo svg({$expression})->toHtml(); } catch (\Exception \$e) { echo svg('heroicon-o-x-mark', 'h-6 w-6 text-primary-600 dark:text-primary-500')->toHtml(); } ?>";
+        });
+        Blade::directive('safeSvgW', function ($expression) {
+            return "<?php try { echo svg({$expression})->toHtml(); } catch (\Exception \$e) { echo svg('heroicon-o-x-mark', 'h-6 w-6 text-rose-600 dark:text-rose-500')->toHtml(); } ?>";
+        });
         FilamentAsset::register([
             Css::make('final_2.2', __DIR__ . '/../../public/build/assets/app.css')->loadedOnRequest(),
         ]);

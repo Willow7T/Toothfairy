@@ -83,7 +83,6 @@ class TreatmentResource extends Resource
                     ->openable()
                     ->moveFiles()
                     ->deletable()
-
                     //only docx file types are accepted
                     ->acceptedFileTypes(['application/vnd.openxmlformats-officedocument.wordprocessingml.document'])
                     ->maxFiles(1)
@@ -91,7 +90,6 @@ class TreatmentResource extends Resource
                 FileUpload::make('image')
                     ->image()
                     ->directory('Treatments')
-                    ->required()
                     ->imageEditor()
                     ->downloadable()
                     ->maxSize(30000)

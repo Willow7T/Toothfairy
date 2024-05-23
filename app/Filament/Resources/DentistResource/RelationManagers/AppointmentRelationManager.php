@@ -17,6 +17,8 @@ class AppointmentRelationManager extends RelationManager
 {
     protected static string $relationship = 'appointmentswdentist';
 
+    protected static ?string $title = 'Appointments';
+
     public function form(Form $form): Form
     {
         return $form

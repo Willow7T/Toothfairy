@@ -15,6 +15,7 @@ use Rawilk\ProfileFilament\Contracts\PendingUserEmail\MustVerifyNewEmail;
 use Filament\Models\Contracts\HasAvatar;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
+use Illuminate\Database\Eloquent\Collection;
 
 class User extends Authenticatable implements MustVerifyNewEmail, FilamentUser, HasAvatar
 {
@@ -57,9 +58,9 @@ class User extends Authenticatable implements MustVerifyNewEmail, FilamentUser, 
 
     protected static function booted(): void
     {
-        static::creating(function (User $user) {
-            $user->role_id = 3;
-        });
+        // static::creating(function (User $user) {
+        //     $user->role_id = 3;
+        // });
     }
 
     public function role(): BelongsTo
@@ -102,5 +103,28 @@ class User extends Authenticatable implements MustVerifyNewEmail, FilamentUser, 
     public function canAccessTreatment(): bool
     {
         return $this->role->name === 'admin' || $this->role->name === 'dentist';
+    }
+
+    public static function searchPatients(string $search): \Illuminate\Support\Collection
+    {
+        $searchParts = explode(' +', $search);
+        $nameSearch = strtolower($searchParts[0] ?? '');
+        $ageSearch = $searchParts[1] ?? '';
+
+        return self::where('role_id', 3)
+            ->where(function ($query) use ($nameSearch, $ageSearch) {
+                $query->whereRaw('LOWER(name) LIKE ?', ["%{$nameSearch}%"])
+                        ->whereHas('userBio', function ($query) use ($ageSearch) {
+                            $query->where('age', 'like', "%{$ageSearch}%");
+                        }); 
+                      
+            })
+            ->orderBy('updated_at', 'desc')
+            ->limit(5)
+            ->get()
+            ->mapWithKeys(function ($patient) {
+                $age = $patient->userBio->age ?? 'N/A';
+                return [$patient->id => "{$patient->name} (Age: {$age})"];
+            });
     }
 }

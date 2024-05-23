@@ -8,6 +8,7 @@ use Livewire\Component;
 
 class Welcome extends Component
 {
+    public $social_links1;
     public function render()
     {
         $homeasset = Homeasset::where('is_active', 1)->inRandomOrder()->first();

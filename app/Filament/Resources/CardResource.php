@@ -6,6 +6,7 @@ use App\Filament\Resources\CardResource\Pages;
 //use App\Filament\Resources\CardResource\RelationManagers;
 use App\Models\Card;
 use Filament\Forms;
+use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -67,6 +68,9 @@ class CardResource extends Resource
                     ->searchable(),
                 Tables\Columns\IconColumn::make('is_active')
                     ->boolean(),
+                Tables\Columns\TextColumn::make('content')
+                    ->wrap()
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('sort_order')
                     ->numeric()
                     ->sortable(),

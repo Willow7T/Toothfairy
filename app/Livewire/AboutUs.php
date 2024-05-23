@@ -7,6 +7,7 @@ use Livewire\Component;
 
 class AboutUs extends Component
 {
+    public $about_content12;
     public function render()
     {
         //get only 1 content from about us table where type is paragraph and ordered by lasted update

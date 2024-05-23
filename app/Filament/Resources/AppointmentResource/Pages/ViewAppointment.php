@@ -14,8 +14,8 @@ class ViewAppointment extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\Action::make('Download')
-                ->label('Download')
+            Actions\Action::make('PDF')
+                ->label('PDF Print')
                 ->icon('fluentui-document-pdf-32')
                 ->action(function ($record) {
                     // Get record in array

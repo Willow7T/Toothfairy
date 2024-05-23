@@ -130,7 +130,7 @@ class AdminPanelProvider extends PanelProvider
                         NavigationGroup::make('Page Control')
                             ->items([
                                 NavigationItem::make('home')
-                                    ->label('Home')
+                                    ->label('Home Assets')
                                     ->icon('heroicon-o-home')
                                     ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.resources.' . Resources\HomeassetResource::getRoutePrefix() . '.*'))
                                     ->url(fn (): string => Resources\HomeassetResource::getUrl())

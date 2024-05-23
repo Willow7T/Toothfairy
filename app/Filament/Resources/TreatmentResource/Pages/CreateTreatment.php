@@ -19,7 +19,6 @@ class CreateTreatment extends CreateRecord
         return !($user->role->name === 'patient');    
     }
    
-
     protected function getRedirectUrl(): string
     {
         return $this->previousUrl ?? $this->getResource()::getUrl('index');
