@@ -41,7 +41,57 @@ class TreatmentResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema(Treatment::getForm());
+            ->schema([
+                TextInput::make('name')
+                    ->required()
+                    ->maxLength(100),
+                Forms\Components\Textarea::make('description')
+                    ->rows(1)
+                    ->autosize(),
+                Toggle::make('is_register')
+                    ->hint('Register this treatment to allow patient to choose during thier booking process')
+                    ->default(false)
+                    ->required(),
+
+
+                Fieldset::make('Price Range')
+                    ->columns(2)
+                    ->schema([
+                        TextInput::make('price_min')
+                            ->label('Price Minimum')
+                            ->numeric()->mask(RawJs::make('$money($input)'))
+                            ->stripCharacters(',')
+                            ->required()
+                            ->prefixIcon('heroicon-o-banknotes')
+                            ->suffix('kyats'),
+                        TextInput::make('price_max')
+                            ->label('Price Maximum')
+                            ->numeric()->mask(RawJs::make('$money($input)'))
+                            ->stripCharacters(',')
+                            ->required()
+                            ->prefixIcon('heroicon-o-banknotes')
+                            ->suffix('kyats'),
+                    ]),
+                FileUpload::make('edufile')
+                    ->directory('EduUploads')
+                    ->label('Educational File')
+                    ->columnSpanFull()
+                    ->previewable(false)
+                    ->openable()
+                    ->moveFiles()
+                    ->deletable()
+                    //only docx file types are accepted
+                    ->acceptedFileTypes(['application/vnd.openxmlformats-officedocument.wordprocessingml.document'])
+                    ->maxFiles(1)
+                    ->helperText('Upload a .docx file for educational purposes'),
+                FileUpload::make('image')
+                    ->image()
+                    ->directory('Treatments')
+                    ->imageEditor()
+                    ->downloadable()
+                    ->maxSize(30000)
+                    ->previewable(),
+            ]);
     }
 
     public static function table(Table $table): Table

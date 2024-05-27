@@ -13,6 +13,7 @@ class CreatePatients extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['role_id'] = 3;
+        
         $data['password'] = 'password';
         return $data;
     }
