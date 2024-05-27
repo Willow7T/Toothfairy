@@ -3,6 +3,15 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Cheesegrits\FilamentPhoneNumbers\Forms\Components\PhoneNumber;
+use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,7 +24,9 @@ use Rawilk\ProfileFilament\Contracts\PendingUserEmail\MustVerifyNewEmail;
 use Filament\Models\Contracts\HasAvatar;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+
 
 class User extends Authenticatable implements MustVerifyNewEmail, FilamentUser, HasAvatar
 {
@@ -126,5 +137,81 @@ class User extends Authenticatable implements MustVerifyNewEmail, FilamentUser, 
                 $age = $patient->userBio->age ?? 'N/A';
                 return [$patient->id => "{$patient->name} (Age: {$age})"];
             });
+    }
+
+    public static function getPatientform():array
+    {
+      return  [
+            //fields from user
+            TextInput::make('name')
+                ->required()
+                ->prefixIcon('heroicon-o-user')
+                ->maxLength(100),
+            TextInput::make('email')
+                ->required()
+                ->email()
+                ->unique('users', 'email')
+                ->prefixIcon('heroicon-o-envelope')
+                ->hiddenOn('edit'),
+
+            //Fields from user_bio
+            Fieldset::make('User Bio')
+                ->relationship('userBio')
+                ->schema([
+                    DatePicker::make('birthday')
+                        ->label('Birthday')
+                        ->prefixIcon('iconpark-birthdaycake-o')
+                        ->after('1900-01-01')
+                        ->before('today')
+                        ->maxDate(now()->subYear(2))
+                        ->default(now()->subYear(2))
+                        ->native(false)
+                        ->live()
+                        ->hint('This field is automatically calculated based on the age field.')
+                        ->afterStateUpdated(function (Set $set, Get $get) {
+                            $birthday = $get('birthday');
+                            $age = Carbon::parse($birthday)->age;
+                            $set('age', $age);
+                        }),
+                    TextInput::make('age')
+                        ->label('Age')
+                        ->live()
+                        ->suffix('years')
+                        ->default(2)
+                        ->numeric()
+                        ->prefixIcon('iconpark-birthdaycake-o')
+                        ->afterStateUpdated(function (Set $set, Get $get) {
+                            $age = $get('age');
+                            $birthday = Carbon::now()->subYears($age)->toDateString();
+                            $set('birthday', $birthday);
+                        })
+                        ->hint('This field is automatically calculated based on the birthday field.'),
+                    Select::make('sex')
+                        ->label('Sex')
+                        ->prefixIcon('bi-gender-ambiguous')
+                        ->options([
+                            'male' => 'Male',
+                            'female' => 'Female',
+                            'other' => 'Other',
+                        ]),
+                    Textarea::make('medical_info')
+                        ->label('Medical Info')
+                        ->rows(1)
+                        ->autosize(),
+                    Fieldset::make('Contact Information')
+                        ->schema([
+                            Textarea::make('address')
+                                ->label('Address')
+                                ->rows(1)
+                                ->autosize(),
+                            PhoneNumber::make('phone_no')
+                                ->label('Phone number')
+                                ->prefix('(+95 / 0)')
+                                ->suffix('Myanmar')
+                                ->region('MM'),
+                        ]),
+                    ]),
+                    
+                ];
     }
 }

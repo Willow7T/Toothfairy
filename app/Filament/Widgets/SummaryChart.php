@@ -35,8 +35,8 @@ class SummaryChart extends ChartWidget
         $data_I = Trend::model(Appointment::class)
             ->between(
                 //get data from last year
-                start: now()->subYear()->startOfYear(),
-                end: now()->subYear()->endOfYear(),
+                start: now()->startOfYear(),
+                end: now()->endOfYear(),
             )
             ->dateColumn('appointment_date')
             ->perMonth()

@@ -7,9 +7,8 @@ use App\Filament\Resources\LabResource\RelationManagers;
 use App\Models\Lab;
 use Cheesegrits\FilamentPhoneNumbers\Columns\PhoneNumberColumn;
 use Cheesegrits\FilamentPhoneNumbers\Enums\PhoneFormat;
-use Cheesegrits\FilamentPhoneNumbers\Forms\Components\PhoneNumber;
+
 use Filament\Forms;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -33,29 +32,7 @@ class LabResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                TextInput::make('name')
-                    ->label('Lab name')
-                    ->required()
-                    ->maxLength(30),
-                TextInput::make('email')
-                    ->label('Email')
-                    ->email()
-                    ->unique('labs', 'email')
-                    ->prefixIcon('heroicon-o-envelope'),
-                TextInput::make('address')
-                    ->label('Address'),
-                TextInput::make('website')
-                    ->label('Website')
-                    ->url()
-                    ->prefix('https://')
-                    ->prefixIcon('heroicon-s-globe-alt'),
-                PhoneNumber::make('phone_no')
-                ->label('Phone number')
-                ->prefix('(+95 / 0)')
-                ->suffix('Myanmar')
-                ->region('MM'),
-            ]);
+            ->schema(Lab::getForm());
     }
 
     public static function table(Table $table): Table

@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\PurchaselogResource\Pages;
 use App\Filament\Resources\PurchaselogResource\RelationManagers;
 use App\Models\LabItem;
+use App\Models\Item;
 use App\Models\Purchaselog;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
@@ -44,16 +45,6 @@ class PurchaselogResource extends Resource
                             ->default('today')
                             ->native(false)
                             ->required(),
-                        // Select::make('status')
-                        //     ->label('Status')
-                        //     ->options([
-                        //         'pending' => 'Pending',
-                        //         'completed' => 'Completed',
-                        //         'cancelled' => 'Cancelled',
-                        //     ])
-                        //     ->default('pending')
-                        //     ->required(),
-
                     ]),
 
                 Repeater::make('purchaselog_id')
@@ -172,18 +163,20 @@ class PurchaselogResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
-                    Tables\Actions\ViewAction::make(),
-                    Tables\Actions\EditAction::make()
-                        ->slideOver(),
+                    Tables\Actions\EditAction::make(),
+                        //->slideOver(),
                     Tables\Actions\DeleteAction::make(),
                 ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\ForceDeleteBulkAction::make(),
+                    Tables\Actions\RestoreBulkAction::make(),
                 ]),
-            ]);
-    }
+            ])
+            ->defaultSort('created_at', 'desc');    
+        }
 
     public static function getRelations(): array
     {
@@ -197,8 +190,15 @@ class PurchaselogResource extends Resource
         return [
             'index' => Pages\ListPurchaselogs::route('/'),
             'create' => Pages\CreatePurchaselog::route('/create'),
-            //'edit' => Pages\EditPurchaselog::route('/{record}/edit'),
+            'edit' => Pages\EditPurchaselog::route('/{record}/edit'),
             'view' => Pages\ViewPurchaselog::route('/{record}'),    
         ];
+    }
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
     }
 }

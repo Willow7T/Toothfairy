@@ -5,18 +5,18 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\TreatmentResource\Pages;
 use App\Livewire\WordRender;
 use App\Models\Treatment;
+use Filament\Forms\Form;
 use Dompdf\FrameDecorator\Text;
 use Filament\Forms;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Form;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Infolists\Components\ViewEntry;
 use Filament\Infolists\Components\Fieldset as ComponentsFieldset;
 use Filament\Infolists\Components\Livewire;
 use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Components\ViewEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Support\RawJs;
@@ -38,63 +38,10 @@ class TreatmentResource extends Resource
 
     //protected static ?int $navigationSort = 0;
 
-
-
-
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                TextInput::make('name')
-                    ->required()
-                    ->maxLength(100),
-                Forms\Components\Textarea::make('description')
-                    ->rows(1)
-                    ->autosize(),
-                Toggle::make('is_register')
-                    ->hint('Register this treatment to allow patient to choose during thier booking process')
-                    ->default(false)
-                    ->required(),
-
-
-                Fieldset::make('Price Range')
-                    ->columns(2)
-                    ->schema([
-                        TextInput::make('price_min')
-                            ->label('Price Minimum')
-                            ->numeric()->mask(RawJs::make('$money($input)'))
-                            ->stripCharacters(',')
-                            ->required()
-                            ->prefixIcon('heroicon-o-banknotes')
-                            ->suffix('kyats'),
-                        TextInput::make('price_max')
-                            ->label('Price Maxium')
-                            ->numeric()->mask(RawJs::make('$money($input)'))
-                            ->stripCharacters(',')
-                            ->required()
-                            ->prefixIcon('heroicon-o-banknotes')
-                            ->suffix('kyats'),
-                    ]),
-                FileUpload::make('edufile')
-                    ->directory('EduUploads')
-                    ->label('Educational File')
-                    ->columnSpanFull()
-                    ->previewable(false)
-                    ->openable()
-                    ->moveFiles()
-                    ->deletable()
-                    //only docx file types are accepted
-                    ->acceptedFileTypes(['application/vnd.openxmlformats-officedocument.wordprocessingml.document'])
-                    ->maxFiles(1)
-                    ->helperText('Upload a .docx file for educational purposes'),
-                FileUpload::make('image')
-                    ->image()
-                    ->directory('Treatments')
-                    ->imageEditor()
-                    ->downloadable()
-                    ->maxSize(30000)
-                    ->previewable(),
-            ]);
+            ->schema(Treatment::getForm());
     }
 
     public static function table(Table $table): Table

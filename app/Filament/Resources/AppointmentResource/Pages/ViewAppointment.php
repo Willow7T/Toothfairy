@@ -3,9 +3,9 @@
 namespace App\Filament\Resources\AppointmentResource\Pages;
 
 use App\Filament\Resources\AppointmentResource;
-use App\Models\Appointment;
 use Filament\Actions;
 use Filament\Resources\Pages\ViewRecord;
+use App\Models\Appointment;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class ViewAppointment extends ViewRecord
@@ -40,7 +40,7 @@ class ViewAppointment extends ViewRecord
                     //     }, 'appointment.pdf');
                 }),
             Actions\EditAction::make()
-                ->slideOver(),
+               // ->slideOver(),
 
         ];
     }

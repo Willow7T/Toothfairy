@@ -7,7 +7,6 @@ use App\Models\Appointment;
 use App\Models\Treatment;
 use App\Models\User;
 use Filament\Forms;
-use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Placeholder;
@@ -15,25 +14,21 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Wizard;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Support\RawJs;
 use Filament\Tables;
-use Filament\Tables\Columns\ColumnGroup;
-use Filament\Tables\Columns\Layout\Panel;
-use Filament\Tables\Columns\Layout\Split;
-use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\HtmlString;
-use Termwind\Components\Raw;
+use Filament\Forms\Components\Actions\Action;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+
 
 
 class AppointmentResource extends Resource
@@ -55,6 +50,16 @@ class AppointmentResource extends Resource
                             ->label('Patient')
                             //user role must be 3 (patient) relation
                             ->relationship('patient', 'name')
+                            ->createOptionForm(User::getPatientform())
+                            ->createOptionAction(
+                                fn (Action $action) => $action
+                                ->mutateFormDataUsing(function (array $data): array {
+                                    $data['role_id'] = 3;
+                                    $data['password'] = 'password';
+                                    return $data;
+                                })
+                            )
+                            ->editOptionForm(User::getPatientform())
                             ->searchable()
                             ->columnSpanFull()
                             ->options(
@@ -118,6 +123,8 @@ class AppointmentResource extends Resource
                             ->relationship('treatment', 'name')
                             ->live(onBlur: true)
                             ->searchable()
+                            ->createOptionForm(Treatment::getForm())
+                            ->editOptionForm(Treatment::getForm())
                             //orderedby last update
                             ->options(Treatment::orderBy('updated_at', 'desc')->get()->pluck('name', 'id'))
                             ->loadingMessage('Loading treatments...')
@@ -286,18 +293,21 @@ class AppointmentResource extends Resource
                         'completed' => 'Completed',
                         'cancelled' => 'Cancelled',
                     ]),
+                    Tables\Filters\TrashedFilter::make(),
+
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
-                    Tables\Actions\ViewAction::make(),
-                    Tables\Actions\EditAction::make()
-                        ->slideOver(),
+                    Tables\Actions\EditAction::make(),
+                        //->slideOver(),
                     Tables\Actions\DeleteAction::make(),
                 ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\ForceDeleteBulkAction::make(),
+                    Tables\Actions\RestoreBulkAction::make(),
                 ]),
             ])
             ->defaultSort('created_at', 'desc');
@@ -315,9 +325,16 @@ class AppointmentResource extends Resource
         return [
             'index' => Pages\ListAppointments::route('/'),
             'create' => Pages\CreateAppointment::route('/create'),
-            //'edit' => Pages\EditAppointment::route('/{record}/edit'),
+            'edit' => Pages\EditAppointment::route('/{record}/edit'),
             'view' => Pages\ViewAppointment::route('/{record}'),
 
         ];
+    }
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
     }
 }

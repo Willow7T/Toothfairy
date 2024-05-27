@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
+use Cheesegrits\FilamentPhoneNumbers\Forms\Components\PhoneNumber;
+use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Lab extends Model
@@ -18,4 +20,30 @@ class Lab extends Model
     // {
     //     return $this->hasMany(LabItem::class);
     // }
+    public static function getForm():array
+    {
+    return [
+        TextInput::make('name')
+            ->label('Lab name')
+            ->required()
+            ->maxLength(30),
+        TextInput::make('email')
+            ->label('Email')
+            ->email()
+            ->unique('labs', 'email')
+            ->prefixIcon('heroicon-o-envelope'),
+        TextInput::make('address')
+            ->label('Address'),
+        TextInput::make('website')
+            ->label('Website')
+            ->url()
+            ->prefix('https://')
+            ->prefixIcon('heroicon-s-globe-alt'),
+        PhoneNumber::make('phone_no')
+        ->label('Phone number')
+        ->prefix('(+95 / 0)')
+        ->suffix('Myanmar')
+        ->region('MM'),
+    ];
+    }
 }

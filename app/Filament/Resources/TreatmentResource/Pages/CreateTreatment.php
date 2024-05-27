@@ -14,7 +14,6 @@ class CreateTreatment extends CreateRecord
     {
         $user = auth()->user();
        // dd($user->role->name);  
-
         // Hide the fieldset if the user's role is 'patient'
         return !($user->role->name === 'patient');    
     }
