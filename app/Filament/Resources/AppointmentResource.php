@@ -53,11 +53,11 @@ class AppointmentResource extends Resource
                             ->createOptionForm(User::getPatientform())
                             ->createOptionAction(
                                 fn (Action $action) => $action
-                                ->mutateFormDataUsing(function (array $data): array {
-                                    $data['role_id'] = 3;
-                                    $data['password'] = 'password';
-                                    return $data;
-                                })
+                                    ->mutateFormDataUsing(function (array $data): array {
+                                        $data['role_id'] = 3;
+                                        $data['password'] = 'password';
+                                        return $data;
+                                    })
                             )
                             ->editOptionForm(User::getPatientform())
                             ->searchable()
@@ -71,7 +71,7 @@ class AppointmentResource extends Resource
                                     })
                             )
                             ->getSearchResultsUsing(fn (string $search): array =>
-                                User::searchPatients($search)->toArray())
+                            User::searchPatients($search)->toArray())
                             ->required()
                             ->hint(new HtmlString('
                             <p>Search with name and age. To search with age use<span class="text-primary-400">" +"</span>before the typing the age.</p>
@@ -81,7 +81,7 @@ class AppointmentResource extends Resource
                             <kbd class="min-h-[30px] inline-flex justify-center items-center py-1 px-1.5 bg-white border border-gray-200 font-fira text-sm text-primary-500 rounded-md shadow-[0px_2px_0px_0px_rgba(0,0,0,0.08)]"
                             >+</kbd>
                             </p>
-                            '))  
+                            '))
                             ->loadingMessage('Loading patients...'),
                         Select::make('dentist_id')
                             ->label('Dentist')
@@ -293,13 +293,13 @@ class AppointmentResource extends Resource
                         'completed' => 'Completed',
                         'cancelled' => 'Cancelled',
                     ]),
-                    Tables\Filters\TrashedFilter::make(),
+                Tables\Filters\TrashedFilter::make(),
 
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\EditAction::make(),
-                        //->slideOver(),
+                    //->slideOver(),
                     Tables\Actions\DeleteAction::make(),
                 ]),
             ])
