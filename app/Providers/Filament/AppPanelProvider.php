@@ -91,7 +91,7 @@ class AppPanelProvider extends PanelProvider
                     NavigationItem::make('Treatment')
                         ->icon('ri-health-book-line')
                         ->url(fn (): string => TreatmentResource::getUrl())
-                        ->isActiveWhen(fn (): bool => request()->routeIs('filament.app.resources.' . TreatmentResource::getRoutePrefix(). '.*'))
+                        ->isActiveWhen(fn (): bool => request()->routeIs('filament.app.resources.' . TreatmentResource::getRoutePrefix() . '.*'))
                         ->sort(1),
                     NavigationItem::make('Gallery')
                         ->icon('vaadin-picture')
@@ -122,6 +122,10 @@ class AppPanelProvider extends PanelProvider
             //->sidebarFullyCollapsibleOnDesktop()
             ->topNavigation()
             ->breadcrumbs()
+            ->favicon('uploads/Favicon.png')
+            //->brandName('Tooth Fairy')
+            ->brandLogoHeight('3rem')
+            ->brandLogo('uploads/brandlogo.svg')
             ->plugins(
                 [
                     LightSwitchPlugin::make()

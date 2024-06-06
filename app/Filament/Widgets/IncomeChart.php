@@ -15,11 +15,8 @@ class IncomeChart extends ChartWidget
 
     protected static bool $isLazy = true;
 
-
-
     protected function getData(): array
     {
-
         $data = Trend::model(Appointment::class)
             ->between(
                 start: now()->startOfYear(),
@@ -31,15 +28,14 @@ class IncomeChart extends ChartWidget
 
         $data_2 = Trend::model(Appointment::class)
             ->between(
-                //get data from last year
                 start: now()->subYear()->startOfYear(),
                 end: now()->subYear()->endOfYear(),
             )
             ->dateColumn('appointment_date')
             ->perMonth()
             ->sum('total_fee');
+
         return [
-            //'labels' => $data->map(fn (TrendValue $value) => $value->date),
             'datasets' => [
                 [
                     'label' => '2023',
@@ -52,11 +48,10 @@ class IncomeChart extends ChartWidget
                     'label' => '2024',
                     'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
                     'backgroundColor' => 'rgba(99, 225, 132, 0.2)',
-                    'borderColor' => 'rgba(99, 225, 132, 0.8)', 
+                    'borderColor' => 'rgba(99, 225, 132, 0.8)',
                 ],
 
             ],
-            //            'labels' => $data->map(fn (TrendValue $value) => $value->date),
 
             'labels' => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         ];
@@ -65,20 +60,8 @@ class IncomeChart extends ChartWidget
     public function getDescription(): ?string
     {
         return 'Income Table for Last Year and This Year';
-
     }
-   
 
-    protected function getOptions(): array
-    {
-        return [
-            'plugins' => [
-               
-            ],
-            
-        
-        ];
-    }
     protected function getType(): string
     {
         return 'bar';

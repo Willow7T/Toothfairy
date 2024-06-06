@@ -6,6 +6,7 @@ use App\Models\Purchaselog;
 use Filament\Widgets\ChartWidget;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
+
 class ExpenseChart extends ChartWidget
 {
     protected static ?string $pollingInterval = null;
@@ -14,13 +15,8 @@ class ExpenseChart extends ChartWidget
 
     protected static bool $isLazy = true;
 
-
-
-
-
     protected function getData(): array
     {
-
         $data = Trend::model(Purchaselog::class)
             ->between(
                 start: now()->startOfYear(),
@@ -32,7 +28,6 @@ class ExpenseChart extends ChartWidget
 
         $data_2 = Trend::model(Purchaselog::class)
             ->between(
-                //get data from last year
                 start: now()->subYear()->startOfYear(),
                 end: now()->subYear()->endOfYear(),
             )
@@ -53,9 +48,7 @@ class ExpenseChart extends ChartWidget
                     'backgroundColor' => 'rgba(255, 99, 132, 0.2)',
                     'borderColor' => 'rgba(225, 99, 132, 0.8)', //green
                 ],
-
             ],
-
             'labels' => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         ];
     }
@@ -65,16 +58,6 @@ class ExpenseChart extends ChartWidget
         return 'Expense Table for Last Year and This Year';
     }
 
-    protected function getOptions(): array
-    {
-        return [
-            'plugins' => [
-               
-            ],
-            
-        
-        ];
-    }
     protected function getType(): string
     {
         return 'bar';

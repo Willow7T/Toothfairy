@@ -27,6 +27,8 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\HtmlString;
 use Filament\Forms\Components\Actions\Action;
+use Filament\Tables\Columns\Summarizers\Sum;
+use Filament\Tables\Filters\Filter;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 
@@ -142,6 +144,11 @@ class AppointmentResource extends Resource
                         Fieldset::make('Price Range')
                             ->live(onBlur: true)
                             ->afterStateUpdated(function (Set $set, Get $get) {
+                                //dont calculate if the price is blank or quantity is blank
+                                if (!$get('price') || !$get('quantity')) {
+                                    return;
+                                }
+
                                 $price = $get('price');
                                 $quantity = $get('quantity');
                                 $set('calculated_fee', $price * $quantity);
@@ -175,9 +182,13 @@ class AppointmentResource extends Resource
                         Placeholder::make('calculated_fee')
                             ->label('Calculated Fee')
                             ->content(function (Get $get): string {
-                                $price = $get('price');
-                                $quantity = $get('quantity');
-                                return number_format($price * $quantity) . ' kyats';
+                                if (!$get('price') || !$get('quantity')) {
+                                    return '0 kyats';
+                                } else {
+                                    $price = $get('price');
+                                    $quantity = $get('quantity');
+                                    return number_format($price * $quantity) . ' kyats';
+                                }
                             }),
 
                     ]),
@@ -245,8 +256,8 @@ class AppointmentResource extends Resource
                     ->suffix('%')->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('total_fee')
                     ->label('Total Cost')
+                    ->summarize(Sum::make()->money(''))
                     ->suffix(' kyats')->toggleable(isToggledHiddenByDefault: true),
-
                 TextColumn::make('treatments.treatment.name')
                     ->label('Treatment')
                     ->listWithLineBreaks()
@@ -286,6 +297,24 @@ class AppointmentResource extends Resource
             ->filters([
                 // Filter::make('is_featured')
                 //     ->query(fn (Builder $query) => $query->where('is_featured', true)),
+                Filter::make('appointment_date')
+                    ->form([
+                        Forms\Components\DatePicker::make('appointment_date_from')
+                            ->native(false),
+                        Forms\Components\DatePicker::make('appointment_date_until')
+                            ->native(false),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['appointment_date_from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('appointment_date', '>=', $date),
+                            )
+                            ->when(
+                                $data['appointment_date_until'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('appointment_date', '<=', $date),
+                            );
+                    }),
                 SelectFilter::make('status')
                     ->label('Status')
                     ->options([

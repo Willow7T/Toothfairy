@@ -19,7 +19,9 @@ use Filament\Resources\Resource;
 use Filament\Support\RawJs;
 use Filament\Tables;
 use Filament\Tables\Columns\ColumnGroup;
+use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -61,12 +63,12 @@ class PurchaselogResource extends Resource
                     <kbd class="min-h-[30px] inline-flex justify-center items-center py-1 px-1.5 bg-white border border-gray-200 font-fira text-sm text-primary-500 rounded-md shadow-[0px_2px_0px_0px_rgba(0,0,0,0.08)] dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-200 dark:shadow-[0px_2px_0px_0px_rgba(255,255,255,0.1)]"
                     >+</kbd>
                     </p>
-                    '))  
+                    '))
                     ->defaultItems(2)
                     ->schema([
                         Select::make('labitem_id')
                             ->label('Item')
-                            ->relationship('labitem', 'id')   
+                            ->relationship('labitem', 'id')
                             ->live(onBlur: true)
                             ->searchable()
                             //orderedby last update
@@ -74,7 +76,7 @@ class PurchaselogResource extends Resource
                                 return [$labItem->id => "{$labItem->item->name} ({$labItem->lab->name} - {$labItem->price})"];
                             }))
                             ->getSearchResultsUsing(fn (string $search): array =>
-                                LabItem::searchItems($search)->toArray())
+                            LabItem::searchItems($search)->toArray())
 
                             ->loadingMessage('Loading items...')
                             ->afterStateUpdated(function (Forms\Set $set, Forms\Get $get) {
@@ -129,17 +131,17 @@ class PurchaselogResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('purchase_date')
-                ->date()
-                ->label('Appointment Date'),
+                    ->date()
+                    ->label('Appointment Date'),
                 TextColumn::make('total_expense')
-                ->label('Total')
-                ->suffix(' kyats'),
+                    ->label('Total')
+                    ->suffix(' kyats'),
                 ColumnGroup::make('Items', [
                     TextColumn::make('purchaselogitems.labitem.item.name')
                         ->label('Item name')
                         ->listWithLineBreaks()
                         ->bulleted(),
-                        TextColumn::make('purchaselogitems.labitem.lab.name')
+                    TextColumn::make('purchaselogitems.labitem.lab.name')
                         ->label('Lab name')
                         ->listWithLineBreaks()
                         ->bulleted()->toggleable(isToggledHiddenByDefault: true),
@@ -151,20 +153,38 @@ class PurchaselogResource extends Resource
                     TextColumn::make('purchaselogitems.price')
                         ->label('Price')
                         ->listWithLineBreaks()
+                        ->summarize(Sum::make()->money(''))
                         ->suffix(' kyats')
                         ->bulleted(),
                 ]),
                 TextColumn::make('description')
                     ->label('Remarks')->toggleable(isToggledHiddenByDefault: true),
-               
+
             ])
             ->filters([
-                //
+                Filter::make('purchase_date')
+                    ->form([
+                        Forms\Components\DatePicker::make('purchase_date_from')
+                            ->native(false),
+                        Forms\Components\DatePicker::make('purchase_date_until')
+                            ->native(false),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['purchase_date_from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('purchase_date', '>=', $date),
+                            )
+                            ->when(
+                                $data['purchase_date_until'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('purchase_date', '<=', $date),
+                            );
+                    }),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\EditAction::make(),
-                        //->slideOver(),
+                    //->slideOver(),
                     Tables\Actions\DeleteAction::make(),
                 ]),
             ])
@@ -175,8 +195,8 @@ class PurchaselogResource extends Resource
                     Tables\Actions\RestoreBulkAction::make(),
                 ]),
             ])
-            ->defaultSort('created_at', 'desc');    
-        }
+            ->defaultSort('created_at', 'desc');
+    }
 
     public static function getRelations(): array
     {
@@ -191,7 +211,7 @@ class PurchaselogResource extends Resource
             'index' => Pages\ListPurchaselogs::route('/'),
             'create' => Pages\CreatePurchaselog::route('/create'),
             'edit' => Pages\EditPurchaselog::route('/{record}/edit'),
-            'view' => Pages\ViewPurchaselog::route('/{record}'),    
+            'view' => Pages\ViewPurchaselog::route('/{record}'),
         ];
     }
     public static function getEloquentQuery(): Builder

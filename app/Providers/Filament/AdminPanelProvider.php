@@ -12,7 +12,7 @@ use App\Filament\Widgets\SummaryStat;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Pages;
+use App\Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -35,8 +35,6 @@ use Filament\Navigation\MenuItem;
 use Filament\Navigation\NavigationBuilder;
 use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
-use Filament\Pages\Dashboard;
-use Filament\Widgets\Widget;
 use Hasnayeen\Themes\ThemesPlugin;
 use Hasnayeen\Themes\Http\Middleware\SetTheme;
 
@@ -45,6 +43,11 @@ class AdminPanelProvider extends PanelProvider
 
     public function panel(Panel $panel): Panel
     {
+        $appName = env('APP_NAME', 'Tooth Fairy');
+        $appName = preg_replace_callback('/([A-Z0-9])/', function ($match) {
+            return ' ' . $match[0];
+        }, $appName);
+        $brandname = strtoupper($appName);
         return $panel
             ->default()
             ->id('admin')
@@ -162,11 +165,8 @@ class AdminPanelProvider extends PanelProvider
                     ->sort(0)
                     ->url(fn (): string => Settings::getUrl()),
             ])
-
-           // ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
+            // ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                //Widgets\AccountWidget::class,
-                // Widgets\FilamentInfoWidget::class,
                 SummaryStat::class,
                 SummaryChart::class,
                 IncomeChart::class,
@@ -193,6 +193,8 @@ class AdminPanelProvider extends PanelProvider
             ->maxContentWidth('7xl')
             ->sidebarCollapsibleOnDesktop()
             ->font('Fira Code')
+            ->favicon('uploads/Favicon.png')
+            ->brandName($brandname)
             ->plugins(
                 [
                     LightSwitchPlugin::make()
