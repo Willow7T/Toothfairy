@@ -34,20 +34,20 @@
         <div class="relative total">
             <p>
                 Remarks: {{ $appointment->description }}
-             </p>
+            </p>
             <div>
                 Total Cost: {{ $appointment->calculated_fee }}
             </div>
             <div>
-                Discount: {{ $appointment->discount }}
-    
+                Discount: {{ $appointment->discount_percentage . '% + ' . $appointment->discount }}
+
             </div>
             <div>
                 Final Cost: {{ $appointment->total_fee }}
             </div>
-           
+
         </div>
-        
+
 
         <!-- Nothing in life is to be feared, it is only to be understood. Now is the time to understand more, so that we may fear less. - Marie Curie -->
     </div>

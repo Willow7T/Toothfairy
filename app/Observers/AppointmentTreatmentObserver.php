@@ -7,7 +7,7 @@ use App\Models\AppointmentTreatment;
 
 class AppointmentTreatmentObserver
 {
-       /**
+    /**
      * Handle the AppointmentTreatment "created" event.
      *
      * @param  \App\Models\AppointmentTreatment  $appointmentTreatment
@@ -15,11 +15,11 @@ class AppointmentTreatmentObserver
      */
     public function created(AppointmentTreatment $appointmentTreatment): void
     {
-          // Get the associated appointment
-          $appointment = $appointmentTreatment->appointment;
+        // Get the associated appointment
+        $appointment = $appointmentTreatment->appointment;
 
-          // Calculate the total_fee
-          $this->updateTotalFee($appointment);
+        // Calculate the total_fee
+        $this->updateTotalFee($appointment);
     }
 
     /**
@@ -32,7 +32,7 @@ class AppointmentTreatmentObserver
         $this->updateTotalFee($appointment);
     }
 
-     /**
+    /**
      * Handle the AppointmentTreatment "deleted" event.
      *
      * @param  \App\Models\AppointmentTreatment  $appointmentTreatment
@@ -62,7 +62,7 @@ class AppointmentTreatmentObserver
     {
         //
     }
-     /**
+    /**
      * Calculate and update the total_fee for the appointment.
      *
      * @param  \App\Models\Appointment  $appointment
@@ -76,13 +76,6 @@ class AppointmentTreatmentObserver
         });
 
         $appointment->calculated_fee = $totalFee;
-
-        // Subtract the discount from the total fee
-        $dicount = $totalFee * ($appointment->discount_percentage / 100);
-        $totalFee = $totalFee - $dicount;
-        $totalFee = $totalFee - $appointment->discount;
-        // Update the appointment's total_fee
-        $appointment->total_fee = $totalFee;
         $appointment->save();
     }
 }

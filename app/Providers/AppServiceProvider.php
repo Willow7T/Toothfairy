@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Filament\Pages\Home;
 use App\Models\About;
+use App\Models\Appointment;
 use Illuminate\Support\ServiceProvider;
 use Rawilk\ProfileFilament\Facades\Webauthn;
 use Filament\Support\Assets\Css;
@@ -14,6 +15,7 @@ use App\Models\Homeasset;
 use App\Models\PurchaselogItem;
 use App\Models\Treatment;
 use App\Observers\AboutObserver;
+use App\Observers\AppointmentObserver;
 use App\Observers\AppointmentTreatmentObserver;
 use App\Observers\CardObserver;
 use App\Observers\HomeObserver;
@@ -42,6 +44,7 @@ class AppServiceProvider extends ServiceProvider
                 ->usePasskeys(false);
         });
         AppointmentTreatment::observe(AppointmentTreatmentObserver::class);
+        //Appointment::observe(AppointmentObserver::class);
         About::observe(AboutObserver::class);
         Card::observe(CardObserver::class);
         Homeasset::observe(HomeObserver::class);
@@ -51,7 +54,8 @@ class AppServiceProvider extends ServiceProvider
             return "<?php try { echo svg({$expression})->toHtml(); } catch (\Exception \$e) { echo svg('heroicon-o-x-mark', 'h-6 w-6 text-primary-600 dark:text-primary-500')->toHtml(); } ?>";
         });
         Blade::directive('safeSvgW', function ($expression) {
-            return "<?php try { echo svg({$expression})->toHtml(); } catch (\Exception \$e) { echo svg('heroicon-o-x-mark', 'h-6 w-6 text-rose-600 dark:text-rose-500')->toHtml(); } ?>";
+            return
+                "<?php try { echo svg({$expression})->toHtml(); } catch (\Exception \$e) { echo svg('heroicon-o-x-mark', 'h-6 w-6 text-rose-600 dark:text-rose-500')->toHtml(); } ?>";
         });
         FilamentAsset::register([
             Css::make('final_2.2', __DIR__ . '/../../public/build/assets/app.css')->loadedOnRequest(),
