@@ -2,13 +2,13 @@
 
 namespace App\Filament\Resources\PatientsResource\Pages;
 
-use App\Filament\Resources\PatientsResource;
+use App\Filament\Resources\PatientResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
-class EditPatients extends EditRecord
+class EditPatient extends EditRecord
 {
-    protected static string $resource = PatientsResource::class;
+    protected static string $resource = PatientResource::class;
 
     protected function getHeaderActions(): array
     {

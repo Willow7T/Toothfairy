@@ -4,14 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
-class UserBio extends Model
+class DentistBio extends Model
 {
-    use HasFactory, SoftDeletes;
-
-    // Specify the table name
-    protected $table = 'user_bio';
+    use HasFactory;
+    protected $table = 'dentist_bio';
 
     // Define the relationship with the User model
     public function user()
@@ -20,11 +17,9 @@ class UserBio extends Model
     }
 
     protected $fillable = [
-        'birthday',
         'age',
-        'sex',
-        'medical_info',
+        'qualification',
+        'experience',
         'phone_no',
-        'address',
     ];
 }

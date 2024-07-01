@@ -82,6 +82,10 @@ class User extends Authenticatable implements MustVerifyNewEmail, FilamentUser, 
     {
         return $this->hasOne(UserBio::class);
     }
+    public function dentistBio()
+    {
+        return $this->hasOne(DentistBio::class);
+    }
 
     public function getFilamentAvatarUrl(): ?string
     {
@@ -106,6 +110,9 @@ class User extends Authenticatable implements MustVerifyNewEmail, FilamentUser, 
         if ($panel->getId() === 'admin') {
             return $this->role->name === 'admin';
         }
+        if ($panel->getId() === 'dentist') {
+            return $this->role->name === 'dentist';
+        }
         if ($panel->getId() === 'app') {
             //all role but user must have role
             return true;
@@ -125,10 +132,9 @@ class User extends Authenticatable implements MustVerifyNewEmail, FilamentUser, 
         return self::where('role_id', 3)
             ->where(function ($query) use ($nameSearch, $ageSearch) {
                 $query->whereRaw('LOWER(name) LIKE ?', ["%{$nameSearch}%"])
-                        ->whereHas('userBio', function ($query) use ($ageSearch) {
-                            $query->where('age', 'like', "%{$ageSearch}%");
-                        }); 
-                      
+                    ->whereHas('userBio', function ($query) use ($ageSearch) {
+                        $query->where('age', 'like', "%{$ageSearch}%");
+                    });
             })
             ->orderBy('updated_at', 'desc')
             ->limit(5)
@@ -139,9 +145,9 @@ class User extends Authenticatable implements MustVerifyNewEmail, FilamentUser, 
             });
     }
 
-    public static function getPatientform():array
+    public static function getPatientform(): array
     {
-      return  [
+        return  [
             //fields from user
             TextInput::make('name')
                 ->required()
@@ -150,7 +156,7 @@ class User extends Authenticatable implements MustVerifyNewEmail, FilamentUser, 
             TextInput::make('email')
                 ->required()
                 ->email()
-                ->unique('users', 'email')
+                ->unique(ignoreRecord: true)
                 ->prefixIcon('heroicon-o-envelope')
                 ->hiddenOn('edit'),
 
@@ -166,7 +172,7 @@ class User extends Authenticatable implements MustVerifyNewEmail, FilamentUser, 
                         ->maxDate(now()->subYear(2))
                         ->default(now()->subYear(2))
                         ->native(false)
-                        ->live()
+                        ->live(onBlur: true)
                         ->hint('This field is automatically calculated based on the age field.')
                         ->afterStateUpdated(function (Set $set, Get $get) {
                             $birthday = $get('birthday');
@@ -175,7 +181,7 @@ class User extends Authenticatable implements MustVerifyNewEmail, FilamentUser, 
                         }),
                     TextInput::make('age')
                         ->label('Age')
-                        ->live()
+                        ->live(onBlur: true)
                         ->suffix('years')
                         ->default(2)
                         ->numeric()
@@ -210,8 +216,8 @@ class User extends Authenticatable implements MustVerifyNewEmail, FilamentUser, 
                                 ->suffix('Myanmar')
                                 ->region('MM'),
                         ]),
-                    ]),
-                    
-                ];
+                ]),
+
+        ];
     }
 }

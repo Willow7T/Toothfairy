@@ -817,6 +817,9 @@
 
 <body class="antialiased bg-gray-50 dark:bg-gray-900">
     <div class="sm:fixed sm:top-0 sm:right-0 p-6 text-right z-30">
+        <a href="#about-us"
+            class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm  p-1">About
+            Us</a>
         @auth
             <a href="{{ url('/home') }}"
                 class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm  p-1">Home</a>
@@ -824,14 +827,19 @@
                 <a href="{{ url('/admin') }}"
                     class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm ">Admin</a>
             @endif
+            @if (auth()->user()->role_id === 2)
+                <a href="{{ url('/dentist') }}"
+                    class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm ">Dentist</a>
+            @endif
         @else
             <a href="{{ url('/login') }}"
                 class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm  p-1">Log
                 in</a>
             <a href="{{ url('/register') }}"
-                class="ml-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm ">Register</a>
+                class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm ">Register</a>
         @endauth
     </div>
+
     <livewire:Welcome />
 </body>
 <script>

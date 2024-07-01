@@ -2,18 +2,18 @@
 
 namespace App\Filament\Resources\PatientsResource\Pages;
 
-use App\Filament\Resources\PatientsResource;
+use App\Filament\Resources\PatientResource;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 
-class CreatePatients extends CreateRecord
+class CreatePatient extends CreateRecord
 {
-    protected static string $resource = PatientsResource::class;
+    protected static string $resource = PatientResource::class;
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['role_id'] = 3;
-        
+
         $data['password'] = 'password';
         return $data;
     }
@@ -22,5 +22,4 @@ class CreatePatients extends CreateRecord
     {
         return $this->previousUrl ?? $this->getResource()::getUrl('index');
     }
-   
 }

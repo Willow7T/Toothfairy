@@ -20,13 +20,15 @@
                 <tr>
                     <th>Treatment</th>
                     <th>Quantity</th>
-                    <th>Price</th>
+                    <th>Price/Per Item</th>
+                    <th>Total Price</th>
                 </tr>
                 @foreach ($treatments as $treatment)
                     <tr>
                         <td>{{ $treatment->treatment->name }}</td>
                         <td>{{ $treatment->quantity }}</td>
                         <td>{{ $treatment->price }}</td>
+                        <td>{{ $treatment->quantity * $treatment->price }}</td>
                     </tr>
                 @endforeach
             </table>
@@ -40,7 +42,6 @@
             </div>
             <div>
                 Discount: {{ $appointment->discount_percentage . '% + ' . $appointment->discount }}
-
             </div>
             <div>
                 Final Cost: {{ $appointment->total_fee }}

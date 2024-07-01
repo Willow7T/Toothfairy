@@ -5,6 +5,7 @@ namespace App\Providers\Filament;
 //use App\Livewire\CustomProfileInfo;
 
 use App\Filament\Resources;
+use App\Filament\Pages;
 use App\Filament\Widgets\ExpenseChart;
 use App\Filament\Widgets\IncomeChart;
 use App\Filament\Widgets\SummaryChart;
@@ -12,7 +13,6 @@ use App\Filament\Widgets\SummaryStat;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use App\Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -35,6 +35,7 @@ use Filament\Navigation\MenuItem;
 use Filament\Navigation\NavigationBuilder;
 use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
+use Filament\Pages\Dashboard;
 use Hasnayeen\Themes\ThemesPlugin;
 use Hasnayeen\Themes\Http\Middleware\SetTheme;
 
@@ -66,10 +67,8 @@ class AdminPanelProvider extends PanelProvider
 
             ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
                 return $builder
-
                     ->items([
                         //navigation for dashboard
-
                         NavigationItem::make('dashboard')
                             ->label('Dashboard')
                             ->icon('heroicon-o-home')
@@ -77,9 +76,7 @@ class AdminPanelProvider extends PanelProvider
                             ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.pages.dashboard'))
                             ->sort(0),
                     ])
-
                     ->groups([
-
                         NavigationGroup::make('People')
                             ->items([
                                 NavigationItem::make('dentist')
@@ -90,8 +87,8 @@ class AdminPanelProvider extends PanelProvider
                                 NavigationItem::make('patient')
                                     ->label('Patients')
                                     ->icon('ri-contacts-book-3-line')
-                                    ->url(fn (): string => Resources\PatientsResource::getUrl())
-                                    ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.resources.' . Resources\PatientsResource::getRoutePrefix() . '.*'))->sort(1),
+                                    ->url(fn (): string => Resources\PatientResource::getUrl())
+                                    ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.resources.' . Resources\PatientResource::getRoutePrefix() . '.*'))->sort(1),
                             ]),
                         NavigationGroup::make('Items')
                             ->items([

@@ -26,6 +26,10 @@ class AppointmentResource extends Resource
 {
     protected static ?string $model = Appointment::class;
 
+
+
+
+
     public static function form(Form $form): Form
     {
         return $form

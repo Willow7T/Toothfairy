@@ -1,12 +1,15 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Dentist\Resources;
 
-use App\Filament\Resources\AppointmentResource\Pages;
+use App\Filament\Dentist\Resources\AppointmentResource\Pages;
+use App\Filament\Dentist\Resources\AppointmentResource\RelationManagers;
 use App\Models\Appointment;
 use App\Models\Treatment;
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components;
+use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\Placeholder;
@@ -20,26 +23,18 @@ use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Support\RawJs;
 use Filament\Tables;
-use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\HtmlString;
-use Filament\Forms\Components\Actions\Action;
-use Filament\Tables\Columns\Summarizers\Sum;
-use Filament\Tables\Filters\Filter;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-
-
+use Illuminate\Support\HtmlString;
 
 class AppointmentResource extends Resource
 {
     protected static ?string $model = Appointment::class;
 
-    protected static ?string $modelLabel = 'Appointments';
-
-    protected static ?string $navigationGroup = 'Transactions';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
     {
@@ -85,17 +80,6 @@ class AppointmentResource extends Resource
                             </p>
                             '))
                             ->loadingMessage('Loading patients...'),
-                        Select::make('dentist_id')
-                            ->label('Dentist')
-                            ->columnSpanFull()
-                            //user role must be 2 (dentist) relation
-                            ->relationship('dentist', 'name')
-                            //only role 2
-                            ->options(User::where('role_id', 2)->get()->pluck('name', 'id'))
-                            ->searchable()
-                            ->required()
-                            // ->extraAttributes([])
-                            ->loadingMessage('Loading dentists...'),
                         DatePicker::make('appointment_date')
                             ->label('Appointment Date')
                             ->default('today')
@@ -224,21 +208,18 @@ class AppointmentResource extends Resource
             ]);
     }
 
-
     public static function table(Table $table): Table
     {
-        //get patient age
-        // $table->column('patient.age', function (Appointment $record) {
-
-        // });
         return $table
             ->columns([
                 TextColumn::make('appointment_date')
                     ->date()
                     ->label('Appointment Date'),
-                TextColumn::make('dentist.name'),
+                TextColumn::make('dentist.name')
+                    ->searchable(),
 
-                TextColumn::make('patient.name'),
+                TextColumn::make('patient.name')
+                    ->searchable(),
                 TextColumn::make('patient.userbio.age')
                     ->label('Age')
                     ->suffix(' years'),
@@ -256,8 +237,8 @@ class AppointmentResource extends Resource
                     ->suffix('%')->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('total_fee')
                     ->label('Total Cost')
-                    ->summarize(Sum::make()->money(''))
                     ->suffix(' kyats')->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('treatments.treatment.name')
                     ->label('Treatment')
                     ->listWithLineBreaks()
@@ -271,13 +252,9 @@ class AppointmentResource extends Resource
                     ->listWithLineBreaks()
                     ->bulleted()->toggleable(isToggledHiddenByDefault: true),
 
-                SelectColumn::make('status')
+                TextColumn::make('status')
                     ->label('Status')
-                    ->options([
-                        'pending' => 'Pending',
-                        'completed' => 'Completed',
-                        'cancelled' => 'Cancelled',
-                    ])->toggleable(),
+                    ->toggleable(),
 
                 TextColumn::make('discription')
                     ->label('Remarks')
@@ -293,60 +270,12 @@ class AppointmentResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
 
             ])
-
-            ->filters([
-                // Filter::make('is_featured')
-                //     ->query(fn (Builder $query) => $query->where('is_featured', true)),
-                Filter::make('appointment_date')
-                    ->form([
-                        Forms\Components\DatePicker::make('appointment_date_from')
-                            ->native(false),
-                        Forms\Components\DatePicker::make('appointment_date_until')
-                            ->native(false),
-                    ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query
-                            ->when(
-                                $data['appointment_date_from'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('appointment_date', '>=', $date),
-                            )
-                            ->when(
-                                $data['appointment_date_until'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('appointment_date', '<=', $date),
-                            );
-                    }),
-                SelectFilter::make('status')
-                    ->label('Status')
-                    ->options([
-                        'pending' => 'Pending',
-                        'completed' => 'Completed',
-                        'cancelled' => 'Cancelled',
-                    ]),
-                Tables\Filters\TrashedFilter::make(),
-
-            ])
-            ->actions([
-                Tables\Actions\ActionGroup::make([
-                    Tables\Actions\EditAction::make(),
-                    //->slideOver(),
-                    Tables\Actions\DeleteAction::make(),
-                ]),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                    Tables\Actions\ForceDeleteBulkAction::make(),
-                    Tables\Actions\RestoreBulkAction::make(),
-                ]),
-            ])
-            ->defaultSort('created_at', 'desc');
+            ->filters([]);
     }
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
@@ -354,16 +283,11 @@ class AppointmentResource extends Resource
         return [
             'index' => Pages\ListAppointments::route('/'),
             'create' => Pages\CreateAppointment::route('/create'),
-            'edit' => Pages\EditAppointment::route('/{record}/edit'),
-            'view' => Pages\ViewAppointment::route('/{record}'),
-
+            // 'edit' => Pages\EditAppointment::route('/{record}/edit'),
         ];
     }
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()
-            ->withoutGlobalScopes([
-                SoftDeletingScope::class,
-            ]);
+        return parent::getEloquentQuery()->where('dentist_id', auth()->user()->id);
     }
 }

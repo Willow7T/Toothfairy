@@ -11,6 +11,7 @@ use App\Filament\Pages\Gallery;
 use App\Filament\Pages\Home;
 use App\Filament\Resources\TreatmentResource;
 use App\Http\Middleware\StoreSessionData;
+use App\Livewire\CustomProfileComponentP;
 use Awcodes\LightSwitch\LightSwitchPlugin;
 use Awcodes\LightSwitch\Enums\Alignment;
 use Filament\Forms\Components\FileUpload;
@@ -39,7 +40,6 @@ class AppPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-        // dd(Gallery::getRouteName());
         return $panel
             ->id('app')
             ->path('')
@@ -51,8 +51,8 @@ class AppPanelProvider extends PanelProvider
             //->discoverResources(in: app_path('Filament/App/Resources'), for: 'App\\Filament\\App\\Resources')
             // ->discoverPages(in: app_path('Filament/App/Pages'), for: 'App\\Filament\\App\\Pages')
             ->resources([
+                // auth()->user()->role_id !== 3 ?
                 AppointmentResource::class,
-
                 TreatmentResource::class,
             ])
             ->pages([
@@ -81,13 +81,14 @@ class AppPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->navigation(function (NavigationBuilder $builder): NavigationBuilder {
+
                 return $builder->items([
+
                     NavigationItem::make('Home')
                         ->icon('heroicon-o-home')
                         ->url(fn (): string => Home::getUrl())
                         ->isActiveWhen(fn (): bool => request()->routeIs(Home::getRouteName()))
                         ->sort(0),
-
                     NavigationItem::make('Treatment')
                         ->icon('ri-health-book-line')
                         ->url(fn (): string => TreatmentResource::getUrl())
@@ -107,6 +108,7 @@ class AppPanelProvider extends PanelProvider
                         ->icon('heroicon-o-book-open')
                         ->url(fn (): string => AppointmentResource::getUrl())
                         ->isActiveWhen(fn (): bool => request()->routeIs('filament.app.resources.' . AppointmentResource::getRoutePrefix() . '.*'))
+                        ->hidden(fn (): bool => auth()->user()->role_id !== 3 ? true : false)
                         ->sort(4),
                     NavigationItem::make('About Us')
                         ->icon('heroicon-o-exclamation-circle')
@@ -117,13 +119,10 @@ class AppPanelProvider extends PanelProvider
 
                 ]);
             })
-            // ->sidebarWidth('16rem')
             ->maxContentWidth('7xl')
-            //->sidebarFullyCollapsibleOnDesktop()
             ->topNavigation()
             ->breadcrumbs()
             ->favicon('uploads/Favicon.png')
-            //->brandName('Tooth Fairy')
             ->brandLogoHeight('3rem')
             ->brandLogo('uploads/brandlogo.svg')
             ->plugins(
@@ -132,6 +131,11 @@ class AppPanelProvider extends PanelProvider
                         ->position(Alignment::BottomCenter),
                     ThemesPlugin::make(),
                     BreezyCore::make()
+                        ->myProfile(
+                            hasAvatars: true,
+                            slug: 'profile/info',
+
+                        )
                         ->avatarUploadComponent(
                             fn () =>
                             FileUpload::make('avatar_url')
@@ -144,11 +148,9 @@ class AppPanelProvider extends PanelProvider
                                 ->multiple(false)
                                 ->maxSize(1024)
                         )
-                        ->myProfile(
-                            hasAvatars: true,
-                            slug: 'profile/info',
+                        ->myProfileComponents([CustomProfileComponentP::class])
 
-                        )->withoutMyProfileComponents([
+                        ->withoutMyProfileComponents([
                             'update_password'
                         ]),
                     ProfileFilamentPlugin::make()

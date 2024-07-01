@@ -1,10 +1,8 @@
 <?php
 
-namespace App\Filament\App\Resources\AppointmentResource\Pages;
+namespace App\Filament\Dentist\Resources\AppointmentResource\Pages;
 
-use App\Filament\App\Resources\AppointmentResource\Pages;
-
-use App\Filament\App\Resources\AppointmentResource;
+use App\Filament\Dentist\Resources\AppointmentResource;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 
@@ -14,7 +12,7 @@ class CreateAppointment extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $data['patient_id'] = auth()->user()->id;
+        $data['dentist_id'] = auth()->user()->id;
 
         return $data;
     }

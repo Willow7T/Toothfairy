@@ -5,8 +5,14 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\DentistResource\Pages;
 use App\Filament\Resources\DentistResource\RelationManagers\AppointmentRelationManager;
 use App\Models\User;
+use Cheesegrits\FilamentPhoneNumbers\Columns\PhoneNumberColumn;
+use Cheesegrits\FilamentPhoneNumbers\Enums\PhoneFormat;
+use Cheesegrits\FilamentPhoneNumbers\Forms\Components\PhoneNumber;
 use Filament\Forms;
+use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -25,17 +31,41 @@ class DentistResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-        ->schema([
-            Forms\Components\TextInput::make('name')
-                ->required()
-                ->maxLength(100),
-            Forms\Components\TextInput::make('email')
-                ->required()
-                ->email()
-                ->unique('users', 'email')
-                ->prefixIcon('heroicon-o-envelope')
-                ->hiddenOn('edit'),
-        ]);
+            ->schema([
+                Forms\Components\TextInput::make('name')
+                    ->required()
+                    ->maxLength(100),
+                Forms\Components\TextInput::make('email')
+                    ->required()
+                    ->email()
+                    ->unique('users', 'email')
+                    ->prefixIcon('heroicon-o-envelope')
+                    ->hiddenOn('edit'),
+                Fieldset::make('Dentist Bio')
+                    ->relationship('dentistBio')
+                    ->schema([
+                        Forms\Components\TextInput::make('age')
+                            ->label('Age')
+                            ->suffix('years')
+                            ->numeric()
+                            ->prefixIcon('iconpark-birthdaycake-o'),
+                        Forms\Components\TextInput::make('qualification')
+                            ->label('Qualification')
+                            ->prefixIcon('fas-graduation-cap'),
+                        Forms\Components\TextInput::make('experience')
+                            ->label('Experience')
+                            ->numeric()
+                            ->suffix('years')
+                            ->prefixIcon('iconpark-briefcase-o')
+                            ->hint('In years'),
+                        PhoneNumber::make('phone_no')
+                            ->label('Phone number')
+                            ->prefix('(+95 / 0)')
+                            ->suffix('Myanmar')
+                            ->region('MM'),
+                    ]),
+
+            ]);
     }
 
     public static function table(Table $table): Table
@@ -48,8 +78,11 @@ class DentistResource extends Resource
                     ->searchable(),
 
                 //New Columns
-                Tables\Columns\TextColumn::make('role.name')
-                ->label('Role'),
+
+                PhoneNumberColumn::make('dentistBio.phone_no')
+                    ->label('Phone number')
+                    ->displayFormat(PhoneFormat::INTERNATIONAL)
+                    ->dial(),
 
             ])
             ->filters([
@@ -76,7 +109,7 @@ class DentistResource extends Resource
     {
         return [
             AppointmentRelationManager::class
-            ];
+        ];
     }
 
     public static function getPages(): array
@@ -94,7 +127,6 @@ class DentistResource extends Resource
         return parent::getEloquentQuery()
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
-            ])->where('role_id', 2)
-            ;
+            ])->where('role_id', 2);
     }
 }

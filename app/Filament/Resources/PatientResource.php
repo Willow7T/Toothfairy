@@ -4,7 +4,6 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PatientsResource\RelationManagers\AppointmentRelationManager;
 use App\Filament\Resources\PatientsResource\Pages;
-use App\Models\Treatment;
 use App\Models\User;
 use Carbon\Carbon;
 use Cheesegrits\FilamentPhoneNumbers\Columns\PhoneNumberColumn;
@@ -23,7 +22,7 @@ use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class PatientsResource extends Resource
+class PatientResource extends Resource
 {
     protected static ?string $model = User::class;
 
@@ -138,7 +137,7 @@ class PatientsResource extends Resource
                 TextEntry::make('userBio.age')
                     ->label('Age')
                     ->numeric(),
-                
+
 
             ]);
     }
@@ -146,7 +145,7 @@ class PatientsResource extends Resource
     public static function getRelations(): array
     {
         return [
-           AppointmentRelationManager::class
+            AppointmentRelationManager::class
         ];
     }
 
@@ -154,8 +153,8 @@ class PatientsResource extends Resource
     {
         return [
             'index' => Pages\ListPatients::route('/'),
-            'create' => Pages\CreatePatients::route('/create'),
-            'view' => Pages\ViewPatients::route('/{record}'),
+            'create' => Pages\CreatePatient::route('/create'),
+            'view' => Pages\ViewPatient::route('/{record}'),
             // 'edit' => Pages\EditPatients::route('/{record}/edit'),
         ];
     }

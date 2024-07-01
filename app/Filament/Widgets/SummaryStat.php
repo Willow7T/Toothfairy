@@ -34,6 +34,9 @@ class SummaryStat extends BaseWidget
         $profitCurrent = 0;
         $profitChangePercentage = 0;
         $profitStatus = true;
+        $appcount = 0;
+        $appcountChangePercentage = 0;
+        $appcountStatus = true;
         if ($is_show == 1) {
             $incomeCurrent = Appointment::query()
                 ->whereDate('appointment_date', '>=', $startDate)
@@ -43,6 +46,12 @@ class SummaryStat extends BaseWidget
                 ->whereDate('purchase_date', '>=', $startDate)
                 ->whereDate('purchase_date', '<=', $endDate)
                 ->sum('total_expense');
+            $appcount = Appointment::query()
+                ->whereDate('appointment_date', '>=', $startDate)
+                ->whereDate('appointment_date', '<=', $endDate)
+                ->where('status', 'pending')
+                ->count();
+
             $profitCurrent = $incomeCurrent - $expenseCurrent;
 
             $previousStartDate = Carbon::parse($startDate)->subMonth()->startOfMonth();
@@ -99,6 +108,22 @@ class SummaryStat extends BaseWidget
             } else {
                 $profitChangePercentage = ($profitCurrent > 0) ? 100 : 0;
             }
+            $appcountPrevious = Appointment::query()
+                ->whereDate('appointment_date', '>=', $previousStartDate)
+                ->whereDate('appointment_date', '<=', $previousEndDate)
+                ->count();
+            // Calculate appcount Comparison in percentage
+            if ($appcountPrevious != 0 && $appcount != 0) {
+                if ($appcount > $appcountPrevious) {
+                    $appcountChangePercentage = (($appcount - $appcountPrevious) / $appcount) * 100;
+                    $appcountStatus = true;
+                } else {
+                    $appcountChangePercentage = (($appcountPrevious - $appcount) / $appcountPrevious) * 100;
+                    $appcountStatus = false;
+                }
+            } else {
+                $appcountChangePercentage = ($appcount > 0) ? 100 : 0;
+            }
         } else {
             $incomeCurrent = 0;
             $expenseCurrent = 0;
@@ -134,22 +159,37 @@ class SummaryStat extends BaseWidget
             ->dateColumn('appointment_date')
             ->perMonth()
             ->sum('total_fee');
+        $data_Count = Trend::model(Appointment::class)
+            ->between(
+                //get data from last year
+                start: now()->startOfYear(),
+                end: now()->endOfYear(),
+            )
+            ->dateColumn('appointment_date')
+            ->perMonth()
+            ->count();
         //dd($data_I->map(fn (TrendValue $value) => $value->aggregate)->toArray());
         return [
-            Stat::make('Total Income', $incomeCurrent)
-                ->chart($data_I->map(fn (TrendValue $value) => $value->aggregate)->toArray())
-                ->description(($incomeStatus ? 'Increase ' : 'Decrease ') . Number::format($incomeChangePercentage, 2) . ' % compared to last month')
-                ->descriptionIcon($incomeStatus ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
-                ->color(($incomeStatus == true) ? 'success' : 'danger'),
-            Stat::make('Total Expense', $expenseCurrent)
-                ->chart($data_E->map(fn (TrendValue $value) => $value->aggregate)->toArray())
-                ->description(($expenseStatus ? 'Increase ' : 'Decrease ') . Number::format($expenseChangePercentage, 2) . ' % compared to last month')
-                ->descriptionIcon($expenseStatus ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
-                ->color($expenseStatus ? 'danger' : 'success'),
+            Stat::make('Total Appointments', $appcount)
+                ->chart($is_show ? $data_Count->map(fn (TrendValue $value) => $value->aggregate)->toArray() : [])
+                ->description(($appcountStatus ? 'Increase ' : 'Decrease ') . Number::format($appcountChangePercentage, 2) . ' % compared to last month')
+                ->descriptionIcon($appcountStatus ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
+                ->color(($appcountStatus == true) ? 'success' : 'danger'),
             Stat::make('Total Profit',  $profitCurrent)
                 ->description(($profitStatus ? 'Increase ' : 'Decrease ') . Number::format($profitChangePercentage, 2) . ' % compared to last month')
                 ->descriptionIcon($profitStatus ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
                 ->color(($profitStatus == true) ? 'success' : 'danger'),
+            Stat::make('Total Income', $incomeCurrent)
+                ->chart($is_show ? $data_I->map(fn (TrendValue $value) => $value->aggregate)->toArray() : [])
+                ->description(($incomeStatus ? 'Increase ' : 'Decrease ') . Number::format($incomeChangePercentage, 2) . ' % compared to last month')
+                ->descriptionIcon($incomeStatus ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
+                ->color(($incomeStatus == true) ? 'success' : 'danger'),
+            Stat::make('Total Expense', $expenseCurrent)
+                ->chart($is_show ? $data_E->map(fn (TrendValue $value) => $value->aggregate)->toArray() : [])
+                ->description(($expenseStatus ? 'Increase ' : 'Decrease ') . Number::format($expenseChangePercentage, 2) . ' % compared to last month')
+                ->descriptionIcon($expenseStatus ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
+                ->color($expenseStatus ? 'danger' : 'success'),
+
 
         ];
     }

@@ -31,11 +31,12 @@
             </div>
         </div>
     </div>
-    <div class="absolute left-5 right-5 mx-auto bottom-[-60rem] md:bottom-[-40rem]">
+    <div id="about-us" class="absolute left-5 right-5 mx-auto bottom-[-60rem] md:bottom-[-40rem]">
         <div class="mx-auto">
             <div class="flex flex-col md:flex-row gap-2">
                 <div class="Img_database rounded-lg dark:bg-gray-800 bg-teal-100" style="border:0;">
-                    <img src="{{ optional($about_image)->image ?? 'uploads/big.png' }}" alt="{{ optional($about_image)->name ?? 'About Us' }}">
+                    <img src="{{ optional($about_image)->image ?? 'uploads/big.png' }}"
+                        alt="{{ optional($about_image)->name ?? 'About Us' }}">
                 </div>
                 <div style="border-left: 0.25rem solid rgb(254 205 211 / 1);">
                 </div>
@@ -44,15 +45,16 @@
                         class="content_database rounded-lg dark:bg-gray-800 bg-teal-100 text-gray-900 dark:text-rose-300">
                         {!! optional($about_content)->content ??
                             '<h2>Under Renovation</h2><p>The site management team has taken down this section to make a fresh experience for users.</p>
-                                                        <blockquote>This section is under renovation</blockquote>' !!}
+                                                                                                                                                        <blockquote>This section is under renovation</blockquote>' !!}
                     </div>
                     <!--  a bullet list for social links -->
                     <div class=" social_database rounded-lg flex flex-col gap-3 dark:bg-gray-800 bg-teal-100">
                         @if ($social_links)
                             @foreach ($social_links as $link)
                                 <div class="flex flex-row gap-3">
-                                    @safeSvgW( optional($link)->icon ?? 'fab-facebook' , 'h-6 w-6 text-rose-600 dark:text-rose-500')
-                                    <a class="font-fira text-rose-600 dark:text-rose-500" href="{{ optional($link)->link ?? 'https://facebook.com/' }}"
+                                    @safeSvgW(optional($link)->icon ?? 'fab-facebook', 'h-6 w-6 text-rose-600 dark:text-rose-500')
+                                    <a class="font-fira text-rose-600 dark:text-rose-500"
+                                        href="{{ optional($link)->link ?? 'https://facebook.com/' }}"
                                         target="_blank">{{ optional($link)->name ?? 'toothfairyadmin@facebook' }}</a>
                                 </div>
                             @endforeach
@@ -83,4 +85,5 @@
             </div>
         </div>
     </div>
+
 </div>
