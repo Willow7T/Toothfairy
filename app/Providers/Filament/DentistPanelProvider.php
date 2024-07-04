@@ -120,6 +120,12 @@ class DentistPanelProvider extends PanelProvider
             ->font('Fira Code')
             ->favicon('uploads/Favicon.png')
             ->brandName($brandname)
+            ->userMenuItems([
+                'Settings' => MenuItem::make()->label('Settings')
+                    ->icon('heroicon-o-cog')
+                    ->sort(0)
+                    ->url(fn (): string => Settings::getUrl()),
+            ])
             ->plugins(
                 [
                     LightSwitchPlugin::make()

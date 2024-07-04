@@ -35,7 +35,7 @@ class AppointmentResource extends Resource
         return $form
             ->schema([
                 Components\Fieldset::make('Appointment Information')
-                    ->columnSpan(4)
+                    ->columnSpan([1, 'md' => 4])
                     ->schema([
                         Select::make('dentist_id')
                             ->label('Dentist')
@@ -60,7 +60,7 @@ class AppointmentResource extends Resource
                             ->required(),
                         Repeater::make('treatments')
                             ->relationship('treatments')
-                            ->columnSpan(4)
+                            ->columnSpan([1, 'md' => 4])
                             ->addActionLabel('Add Treatments')
                             ->schema([
                                 Select::make('treatment_id')

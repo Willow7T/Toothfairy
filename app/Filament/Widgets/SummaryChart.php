@@ -19,7 +19,7 @@ class SummaryChart extends ChartWidget
 
     protected static bool $isLazy = true;
 
-    protected int | string | array $columnSpan = 2;
+    protected int | string | array $columnSpan = [1, 'md' => 2];
 
     protected static ?string $maxHeight = '300px';
 

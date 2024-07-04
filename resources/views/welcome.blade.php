@@ -265,6 +265,8 @@
             display: none
         }
 
+
+
         *,
         :before,
         :after {
@@ -403,6 +405,14 @@
             left: 1.5rem
         }
 
+        .left-14 {
+            left: 3.5rem;
+        }
+
+        .left-\[12\%\] {
+            left: 12%;
+        }
+
         .right-0 {
             right: 0
         }
@@ -415,8 +425,16 @@
             right: 1.5rem
         }
 
+        .right-\[10\%\] {
+            right: 10%;
+        }
+
         .top-20 {
             top: 5rem
+        }
+
+        .top-\[40\%\] {
+            top: 40%;
         }
 
         .z-10 {
@@ -507,12 +525,8 @@
             object-fit: cover
         }
 
-        .p-1 {
-            padding: .25rem
-        }
-
-        .p-6 {
-            padding: 1.5rem
+        .p-4 {
+            padding: 1rem
         }
 
         .px-2 {
@@ -687,6 +701,12 @@
             outline-width: 2px
         }
 
+        @media (min-width: 430px) {
+            .min-\[430px\]\:bottom-\[-45rem\] {
+                bottom: -45rem;
+            }
+        }
+
         @media (min-width: 640px) {
             .sm\:fixed {
                 position: fixed
@@ -699,11 +719,27 @@
             .sm\:top-0 {
                 top: 0
             }
+
+            .sm\:top-\[100\%\] {
+                top: 100%;
+            }
         }
 
         @media (min-width: 768px) {
             .md\:bottom-\[-40rem\] {
                 bottom: -40rem
+            }
+
+            .md\:left-5 {
+                left: 1.25rem;
+            }
+
+            .md\:right-5 {
+                right: 1.25rem;
+            }
+
+            .md\:top-\[60\%\] {
+                top: 60%;
             }
 
             .md\:left-20 {
@@ -740,6 +776,10 @@
                 line-height: 1
             }
 
+            .md\:col-span-2 {
+                grid-column: span 2 / span 2;
+            }
+
             .md\:text-lg {
                 font-size: 1.125rem;
                 line-height: 1.75rem
@@ -754,6 +794,8 @@
                 font-weight: 700
             }
         }
+
+
 
         @media (min-width: 1024px) {
             .lg\:p-8 {
@@ -811,6 +853,16 @@
         .dark\:hover\:text-white:hover:where(.dark, .dark *) {
             --tw-text-opacity: 1;
             color: rgb(255 255 255 / var(--tw-text-opacity))
+        }
+
+        @media (min-width: 1280px) {
+            .xl\:bottom-\[-55rem\] {
+                bottom: -42rem;
+            }
+
+            .xl\:left-28 {
+                left: 7rem;
+            }
         }
     </style>
 </head>

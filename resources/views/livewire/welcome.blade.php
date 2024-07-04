@@ -15,23 +15,42 @@
                     </div>
                 </div>
                 <div class="relative">
-                    <div class="absolute z-10 md:top-20 overflow-hidden">
+                    <div class="md:top-20 overflow-hidden">
                         <img class="w-full h-full object-cover"
                             src="{{ optional($homeasset)->image ?? 'uploads/big.png' }}" alt="{{ 'toothfairyPic' }}">
                         <div
                             class="absolute z-20 bottom-0 rounded-lg left-0 right-0 mx-auto backdrop-blur-md overflow-hidden">
-                            <a href="{{ url('/register') }}">
-                                <p
-                                    class="text-center px-2 mb-1 md:text-xl md:font-bold dark:text-fuchsia-300 text-fuchsia-200">
-                                    {{ optional($homeasset)->p ?? 'Join Us Now' }}</p>
-                            </a>
+                            @auth
+                                @if (auth()->user()->role_id === 3)
+                                    @if (auth()->user()->appointmentswpatient->count() > 0)
+                                        <a href="{{ url('/appointments') }}">
+                                            <p
+                                                class="text-center px-2 mb-1 md:text-xl md:font-bold dark:text-fuchsia-300 text-fuchsia-200">
+                                                {{ optional($homeasset)->p ?? 'Join Us Now' }}</p>
+                                        </a>
+                                    @else
+                                        <a href="{{ url('/appointments/create') }}">
+                                            <p
+                                                class="text-center px-2 mb-1 md:text-xl md:font-bold dark:text-fuchsia-300 text-fuchsia-200">
+                                                {{ optional($homeasset)->p ?? 'Join Us Now' }}</p>
+                                        </a>
+                                    @endif
+                                @endif
+                            @else
+                                <a href="{{ url('/login') }}">
+                                    <p
+                                        class="text-center px-2 mb-1 md:text-xl md:font-bold dark:text-fuchsia-300 text-fuchsia-200">
+                                        {{ optional($homeasset)->p ?? 'Join Us Now' }}</p>
+                                </a>
+                            @endauth
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div id="about-us" class="absolute left-5 right-5 mx-auto bottom-[-60rem] md:bottom-[-40rem]">
+    <div id="about-us" class="mx-auto p-4" style="max-width: fit-content">
         <div class="mx-auto">
             <div class="flex flex-col md:flex-row gap-2">
                 <div class="Img_database rounded-lg dark:bg-gray-800 bg-teal-100" style="border:0;">
@@ -45,7 +64,7 @@
                         class="content_database rounded-lg dark:bg-gray-800 bg-teal-100 text-gray-900 dark:text-rose-300">
                         {!! optional($about_content)->content ??
                             '<h2>Under Renovation</h2><p>The site management team has taken down this section to make a fresh experience for users.</p>
-                                                                                                                                                        <blockquote>This section is under renovation</blockquote>' !!}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <blockquote>This section is under renovation</blockquote>' !!}
                     </div>
                     <!--  a bullet list for social links -->
                     <div class=" social_database rounded-lg flex flex-col gap-3 dark:bg-gray-800 bg-teal-100">

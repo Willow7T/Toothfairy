@@ -104,7 +104,6 @@ class SummaryStat extends BaseWidget
                     $profitChangePercentage = (($profitPrevious - $profitCurrent) / $profitPrevious) * 100;
                     $profitStatus = false;
                 }
-                $profitChangePercentage = (($profitCurrent - $profitPrevious) / $profitCurrent) * 100;
             } else {
                 $profitChangePercentage = ($profitCurrent > 0) ? 100 : 0;
             }
