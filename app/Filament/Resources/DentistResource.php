@@ -47,6 +47,8 @@ class DentistResource extends Resource
                         Forms\Components\TextInput::make('age')
                             ->label('Age')
                             ->suffix('years')
+                            ->minValue(21)
+                            ->maxValue(90)
                             ->numeric()
                             ->prefixIcon('iconpark-birthdaycake-o'),
                         Forms\Components\TextInput::make('qualification')
@@ -55,6 +57,8 @@ class DentistResource extends Resource
                         Forms\Components\TextInput::make('experience')
                             ->label('Experience')
                             ->numeric()
+                            ->minValue(1)
+                            ->maxValue(90)
                             ->suffix('years')
                             ->prefixIcon('iconpark-briefcase-o')
                             ->hint('In years'),
@@ -75,10 +79,18 @@ class DentistResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
-                    ->searchable(),
+                ->searchable()
+                ->copyable(),
 
                 //New Columns
-
+                Tables\Columns\TextColumn::make('dentistBio.age')
+                    ->label('Age'),
+                Tables\Columns\TextColumn::make('dentistBio.qualification')
+                    ->label('Qualification'),
+                    tables\Columns\TextColumn::make('dentistBio.experience')
+                    ->label('Experience')
+                    ->suffix('years'),
+                
                 PhoneNumberColumn::make('dentistBio.phone_no')
                     ->label('Phone number')
                     ->displayFormat(PhoneFormat::INTERNATIONAL)

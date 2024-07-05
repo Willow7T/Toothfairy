@@ -236,11 +236,14 @@ class AppointmentResource extends Resource
                 TextColumn::make('appointment_date')
                     ->date()
                     ->label('Appointment Date'),
-                TextColumn::make('dentist.name'),
+                TextColumn::make('dentist.name')
+                ->searchable(),
 
-                TextColumn::make('patient.name'),
+                TextColumn::make('patient.name')
+                ->searchable(),
                 TextColumn::make('patient.userbio.age')
                     ->label('Age')
+                    ->searchable()
                     ->suffix(' years'),
 
                 TextColumn::make('calculated_fee')

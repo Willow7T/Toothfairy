@@ -88,6 +88,7 @@ class TreatmentResource extends Resource
                     ->image()
                     ->directory('Treatments')
                     ->imageEditor()
+                    ->columnSpanFull()
                     ->downloadable()
                     ->maxSize(30000)
                     ->previewable(),
