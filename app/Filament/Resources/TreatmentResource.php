@@ -32,6 +32,8 @@ class TreatmentResource extends Resource
 
     protected static ?string $navigationIcon = 'ri-health-book-line';
 
+    protected static bool $lazyLoad = false;
+
     protected static ?string $modelLabel = 'Treatments';
 
     //  protected static ?string $navigationGroup = 'Items';

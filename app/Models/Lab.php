@@ -30,7 +30,7 @@ class Lab extends Model
         TextInput::make('email')
             ->label('Email')
             ->email()
-            ->unique('labs', 'email')
+            ->unique(ignoreRecord: true)
             ->prefixIcon('heroicon-o-envelope'),
         TextInput::make('address')
             ->label('Address'),

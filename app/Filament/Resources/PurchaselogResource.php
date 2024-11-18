@@ -132,17 +132,19 @@ class PurchaselogResource extends Resource
             ->columns([
                 TextColumn::make('purchase_date')
                     ->date()
-                    ->label('Appointment Date'),
+                    ->label('Purchase Date'),
                 TextColumn::make('total_expense')
                     ->label('Total')
                     ->suffix(' kyats'),
                 ColumnGroup::make('Items', [
                     TextColumn::make('purchaselogitems.labitem.item.name')
                         ->label('Item name')
+                        ->searchable()
                         ->listWithLineBreaks()
                         ->bulleted(),
                     TextColumn::make('purchaselogitems.labitem.lab.name')
                         ->label('Lab name')
+                        ->searchable()
                         ->listWithLineBreaks()
                         ->bulleted()->toggleable(isToggledHiddenByDefault: true),
                     TextColumn::make('purchaselogitems.quantity')
@@ -162,6 +164,7 @@ class PurchaselogResource extends Resource
 
             ])
             ->filters([
+                Tables\Filters\TrashedFilter::make(),
                 Filter::make('purchase_date')
                     ->form([
                         Forms\Components\DatePicker::make('purchase_date_from')

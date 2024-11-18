@@ -40,6 +40,7 @@ class AppointmentResource extends Resource
     protected static ?string $modelLabel = 'Appointments';
 
     protected static ?string $navigationGroup = 'Transactions';
+    protected static bool $lazyLoad = false;
 
     public static function form(Form $form): Form
     {

@@ -25,6 +25,8 @@ class AboutResource extends Resource
 {
     protected static ?string $model = About::class;
 
+    //lazyload
+    protected static bool $lazyLoad = false;
     //modaltitle
     protected static ?string $pluralModelLabel = 'About Us';
 
