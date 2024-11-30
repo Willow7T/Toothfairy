@@ -43,9 +43,9 @@ class AboutResource extends Resource
                     ->label('Type')
                     ->live()
                     ->options([
-                        'social' => 'Social',
                         'paragraph' => 'Paragraph',
                         'image' => 'Image',
+                        'social' => 'Social',
                     ])
                     ->default('social')
                     ->required(),
@@ -78,7 +78,7 @@ class AboutResource extends Resource
                     ->columnSpanFull()
                     ->previewable()
                     ->hidden(fn (Get $get): bool => !($get('type') === 'image' ? true : false)),
-                TextInput::make('link')
+                TextInput::make('links')
                     ->label('Links')
                     ->prefix('https://')
                     ->suffixIcon('heroicon-o-globe-alt')

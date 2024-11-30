@@ -22,7 +22,7 @@
                             <!-- check link has icon or not first -->
                             
                             @safeSvg(optional($link)->icon ?? 'fab-facebook', 'h-6 w-6 text-primary-600 dark:text-primary-500')                            <a class="font-fira text-primary-600 dark:text-primary-500"
-                                href="{{ optional($link)->link ?? '#' }}"
+                                href="{{ optional($link)->links ?? '#' }}"
                                 target="_blank">{{ optional($link)->name ?? 'admin@toothfairy' }}</a>
                         </div>
                     @endforeach
